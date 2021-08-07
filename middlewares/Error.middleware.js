@@ -11,6 +11,12 @@ const HANDLER_ERRORS = {
   SaveError: (res, { message }) =>
     res.status(503).json({ success: false, message }),
 
+  UnExistError: (res, { message }) =>
+    res.status(400).json({ success: false, message }),
+
+  LoginError: (res, { message }) =>
+    res.status(400).json({ success: false, message }),
+
   defaultError: (res, { name, message }) => {
     console.log({ name, message })
     return res
