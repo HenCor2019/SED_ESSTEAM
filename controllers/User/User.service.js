@@ -1,37 +1,34 @@
-const User = require('../../models/User/User.model')
 const { hashingService } = require('../../utils/hashingService')
 const { emailing } = require('../../utils/emailing')
+const { userRepository } = require('../../repository/User.repository')
 const ErrorResponse = require('../../classes/ErrorResponse')
 const ServiceResponse = require('../../classes/ServiceResponse')
 
 const { SALT } = process.env
 
 const userService = {
-  findByUsernameOrEmail: async ({ username, email }) => {
-    const users = await User.find({
-      $or: [{ username: username }, { email: email }]
-    })
+  findByUsernameOrEmail: async (body) => {
+    const users = await userRepository.findByUsernameOrEmail(body)
 
     return new ServiceResponse(true, users)
   },
-  findOneByUsernameOrEmail: async ({ field }) => {
-    const user = await User.findOne({
-      $or: [{ username: field }, { email: field }]
-    })
 
+  findOneByUsernameOrEmail: async (body) => {
+    const user = await userRepository.findOneByUsernameOrEmail(body)
     if (!user) return new ServiceResponse(false, user)
 
     return new ServiceResponse(true, user)
   },
-  register: async ({ fullname, username, email, password }) => {
+  register: async (body) => {
+    const { password } = body
+
     const hashedPassword = await hashingService.generateHash(password, SALT)
+    body.hashedPassword = hashedPassword
 
-    const newUser = new User({ fullname, username, email, hashedPassword })
-
-    const userSaved = await newUser.save()
+    const userSaved = await userRepository.create(body)
     if (!userSaved) throw new ErrorResponse('SaveError', 'Cannot save the user')
 
-    await emailing.sendRegisterEmail({ username, email })
+    await emailing.sendRegisterEmail(userSaved)
   },
   comparePasswords: (plainPassword, hashedPassword) => {
     const passwordAreEquals = hashingService.compareHash(
