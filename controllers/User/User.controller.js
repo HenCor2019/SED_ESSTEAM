@@ -6,13 +6,19 @@ const ErrorResponse = require('../../classes/ErrorResponse')
 const userController = {
   register: async (req, res, next) => {
     try {
-      await Promise.all([
-        userValidator.validateRegister(req.body),
-        userService.findUsersByUsernameOrEmail(req.body),
-        userService.createUser(req.body)
-      ])
+      await userValidator.validateRegister(req.body)
 
-      return userResponse.create(res)
+      const { content: users } = await userService.findByUsernameOrEmail(
+        req.body
+      )
+
+      if (users.length) {
+        throw new ErrorResponse('RepeatError', 'Some fields are already taken')
+      }
+
+      await userService.register(req.body)
+
+      return userResponse.successfullyRegister(res)
     } catch (error) {
       next(error)
     }
@@ -20,7 +26,7 @@ const userController = {
   login: async (req, res, next) => {
     try {
       await userValidator.validateLogin(req.body)
-      const { content: user } = await userService.findUserByUsernameOrEmail(
+      const { content: user } = await userService.findOneByUsernameOrEmail(
         req.body
       )
 
@@ -31,7 +37,7 @@ const userController = {
 
       userService.comparePasswords(req.body.password, user.hashedPassword)
 
-      return userResponse.login(res, user)
+      return userResponse.successfullyLogin(res, user)
     } catch (error) {
       console.log({ error })
       next(error)
