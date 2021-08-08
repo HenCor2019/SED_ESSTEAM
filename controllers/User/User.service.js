@@ -1,4 +1,5 @@
 const { hashingService } = require('../../utils/hashingService')
+const { tokens } = require('../../utils/tokens')
 const { emailing } = require('../../utils/emailing')
 const { userRepository } = require('../../repository/User.repository')
 const ErrorResponse = require('../../classes/ErrorResponse')
@@ -19,6 +20,7 @@ const userService = {
 
     return new ServiceResponse(true, user)
   },
+
   register: async (body) => {
     const { password } = body
 
@@ -30,6 +32,24 @@ const userService = {
 
     await emailing.sendRegisterEmail(userSaved)
   },
+
+  sendRequestPasswordEmail: async (body) => {
+    const user = await userRepository.findOneByUsernameOrEmail(body)
+
+    if (!user)
+      throw new ErrorResponse(
+        'UnExistError',
+        'Cannot find the username or email!'
+      )
+
+    const token = tokens.createResetPasswordToken(user)
+
+    user.token = token
+    await emailing.sendRequestPasswordEmail(user)
+
+    return { token }
+  },
+
   comparePasswords: (plainPassword, hashedPassword) => {
     const passwordAreEquals = hashingService.compareHash(
       plainPassword,

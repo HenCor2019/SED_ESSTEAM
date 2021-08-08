@@ -17,6 +17,14 @@ const userValidator = {
       password: Joi.string().required()
     })
     return schema.validateAsync(data)
+  },
+
+  requestPassword: (data) => {
+    const schema = Joi.object({
+      field: Joi.string().required()
+    })
+
+    return schema.validateAsync(data)
   }
 }
 

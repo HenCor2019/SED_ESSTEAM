@@ -12,9 +12,8 @@ const userController = {
         req.body
       )
 
-      if (users.length) {
+      if (users.length)
         throw new ErrorResponse('RepeatError', 'Some fields are already taken')
-      }
 
       await userService.register(req.body)
 
@@ -23,6 +22,7 @@ const userController = {
       next(error)
     }
   },
+
   login: async (req, res, next) => {
     try {
       await userValidator.validateLogin(req.body)
@@ -31,15 +31,33 @@ const userController = {
       )
 
       // TODO: add user.active later
-      if (!user) {
+      if (!user)
         throw new ErrorResponse('LoginError', 'User and password not match')
-      }
 
       userService.comparePasswords(req.body.password, user.hashedPassword)
 
       return userResponse.successfullyLogin(res, user)
     } catch (error) {
-      console.log({ error })
+      next(error)
+    }
+  },
+
+  requestPassword: async (req, res, next) => {
+    try {
+      await userValidator.requestPassword(req.body)
+
+      const { token } = await userService.sendRequestPasswordEmail(req.body)
+
+      return userResponse.successfullyRequest(res, token)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  requestPasswordHandler: async (req, res, next) => {
+    try {
+      console.log(req.token)
+    } catch (error) {
       next(error)
     }
   }

@@ -8,6 +8,11 @@ const emailing = {
   sendRegisterEmail: async ({ email, username }) => {
     const registerEmail = skeletons.register({ email, username })
     sgMail.send(registerEmail)
+  },
+
+  sendRequestPasswordEmail: async (payload) => {
+    const requestPasswordEmail = skeletons.requestPassword(payload)
+    sgMail.send(requestPasswordEmail)
   }
 }
 

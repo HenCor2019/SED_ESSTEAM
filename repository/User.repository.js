@@ -10,6 +10,7 @@ const userRepository = {
     const user = await User.findOne({
       $or: [{ username: field }, { email: field }]
     })
+
     return user
   },
 
@@ -17,6 +18,7 @@ const userRepository = {
     const newUser = new User({ fullname, username, email, hashedPassword })
 
     const userSaved = await newUser.save()
+
     return userSaved
   }
 }

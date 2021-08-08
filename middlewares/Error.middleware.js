@@ -14,6 +14,12 @@ const HANDLER_ERRORS = {
   UnExistError: (res, { message }) =>
     res.status(400).json({ success: false, message }),
 
+  UnauthorizedError: (res, { message }) =>
+    res.status(409).json({ success: false, message }),
+
+  JsonWebTokenError: (res, { message }) =>
+    res.status(409).json({ success: false, message }),
+
   LoginError: (res, { message }) =>
     res.status(400).json({ success: false, message }),
 
