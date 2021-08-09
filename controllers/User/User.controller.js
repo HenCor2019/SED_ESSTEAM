@@ -64,13 +64,69 @@ const userController = {
       if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
 
       user.newPassword = req.body.newPassword
-      await userService.update(user)
+      await userService.updateById(user)
 
       return userResponse.successfullyUpdate(res)
     } catch (error) {
       next(error)
     }
+  },
+
+  updateUser: async (req, res, next) => {
+    try {
+      await userValidator.update(req.body)
+      const { content: users } = await userService.findByUsernameOrEmail(
+        req.body
+      )
+
+      const { content: user } = await userService.findOneById(req.body.id)
+
+      if (!user) throw new ErrorResponse('UnExistError', 'Cannot update user')
+
+      const usersId = users
+        .map(({ id }) => id)
+        .filter((id) => id != req.body.id)
+
+      if (usersId.length)
+        throw new ErrorResponse('RepeatError', 'Some fields are already taken')
+
+      await userService.updateById(validateNullFields(req.body, user))
+
+      return userResponse.successfullyUpdate(res)
+    } catch (error) {
+      console.log({ error })
+      next(error)
+    }
+  },
+
+  deleteUser: async (req, res, next) => {
+    try {
+      await userValidator.delete(req.params)
+      const { id } = req.params
+      await userService.deleteOneById(id)
+
+      return userResponse.successfullyDelete(res)
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  deleteAll: async (req, res, next) => {
+    try {
+      await userService.deleteAll()
+      return userResponse.successfullyDelete(res)
+    } catch (error) {
+      next(error)
+    }
   }
 }
+
+const validateNullFields = (body, user) => ({
+  id: user.id,
+  fullname: body.fullname || user.fullname,
+  username: body.username || user.username,
+  email: body.email || user.email,
+  hashedPassword: user.hashedPassword
+})
 
 module.exports = userController

@@ -1,6 +1,6 @@
 const HANDLER_ERRORS = {
   CastError: (res, { message }) =>
-    res.status(400).json({ success: false, message }),
+    res.status(400).json({ success: false, message: 'Id is malformed' }),
 
   ValidationError: (res, { message }) =>
     res.status(206).json({ success: false, message }),

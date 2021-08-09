@@ -34,6 +34,25 @@ const userValidator = {
     })
 
     return schema.validateAsync(data)
+  },
+
+  update: (data) => {
+    const schema = Joi.object({
+      id: Joi.string().required(),
+      fullname: Joi.string(),
+      username: Joi.string(),
+      email: Joi.string().email()
+    }).or('fullname', 'username', 'email')
+
+    return schema.validateAsync(data)
+  },
+
+  delete: (data) => {
+    const schema = Joi.object({
+      id: Joi.string().required()
+    })
+
+    return schema.validateAsync(data)
   }
 }
 

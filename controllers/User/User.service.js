@@ -64,9 +64,11 @@ const userService = {
 
     if (!passwordAreEquals)
       throw new ErrorResponse('LoginError', 'User and password not match')
+
+    return new ServiceResponse(true)
   },
 
-  update: async (user) => {
+  updateById: async (user) => {
     if (user?.newPassword) {
       const hashedPassword = await hashingService.generateHash(
         user.newPassword,
@@ -75,9 +77,13 @@ const userService = {
       user.hashedPassword = hashedPassword
     }
 
-    const updatedUser = await userRepository.update(user)
-    return updatedUser
-  }
+    const updatedUser = await userRepository.updateById(user)
+    return new ServiceResponse(true, updatedUser)
+  },
+
+  deleteOneById: (id) => userRepository.deleteOneById(id),
+
+  deleteALl: () => userRepository.deleteAll(id)
 }
 
 module.exports = { userService }

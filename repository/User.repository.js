@@ -2,13 +2,15 @@ const User = require('../models/User/User.model')
 
 const userRepository = {
   findByUsernameOrEmail: async ({ username, email }) => {
-    const users = await User.find({ $or: [{ username }, { email }] })
+    const users = await User.find({
+      $or: [{ username }, { email: new RegExp(`^${email}`, 'i') }]
+    })
     return users
   },
 
   findOneByUsernameOrEmail: async ({ field }) => {
     const user = await User.findOne({
-      $or: [{ username: field }, { email: field }]
+      $or: [{ username: field }, { email: new RegExp(`^${field}`, 'i') }]
     })
 
     return user
@@ -28,7 +30,7 @@ const userRepository = {
     return userSaved
   },
 
-  update: async ({ id, username, email, fullname, hashedPassword }) => {
+  updateById: async ({ id, username, email, fullname, hashedPassword }) => {
     await User.findByIdAndUpdate(id, {
       username,
       email,
@@ -39,7 +41,11 @@ const userRepository = {
     const updatedUser = await User.findById(id)
 
     return updatedUser
-  }
+  },
+
+  deleteOneById: (id) => User.findByIdAndDelete(id),
+
+  deleteAll: () => User.deleteMany({})
 }
 
 module.exports = { userRepository }
