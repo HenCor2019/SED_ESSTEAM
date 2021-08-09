@@ -1,3 +1,4 @@
+const ErrorResponse = require('../classes/ErrorResponse')
 const { tokens } = require('../utils/tokens')
 
 const { TOKEN_RESET_PASSWORD_KEY, RESET_PASSWORD_HEADER } = process.env
@@ -9,12 +10,9 @@ const Auth = {
 
       if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
 
-      const { content } = tokens.verifyToken(
-        token,
-        TOKEN_RESET_PASSWORD_KEY
-      )
+      const { content } = tokens.verifyToken(token, TOKEN_RESET_PASSWORD_KEY)
 
-      req.token = content
+      req.userContent = content
       next()
     } catch (error) {
       next(error)

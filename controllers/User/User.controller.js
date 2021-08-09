@@ -34,7 +34,7 @@ const userController = {
       if (!user)
         throw new ErrorResponse('LoginError', 'User and password not match')
 
-      userService.comparePasswords(req.body.password, user.hashedPassword)
+      await userService.comparePasswords(req.body.password, user.hashedPassword)
 
       return userResponse.successfullyLogin(res, user)
     } catch (error) {
@@ -56,7 +56,17 @@ const userController = {
 
   requestPasswordHandler: async (req, res, next) => {
     try {
-      console.log(req.token)
+      await userValidator.resetPassword(req.body)
+
+      const { id } = req.userContent
+      const { content: user } = await userService.findOneById(id)
+
+      if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
+
+      user.newPassword = req.body.newPassword
+      await userService.update(user)
+
+      return userResponse.successfullyUpdate(res)
     } catch (error) {
       next(error)
     }

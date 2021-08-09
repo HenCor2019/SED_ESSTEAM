@@ -16,6 +16,9 @@ const userResponse = {
     res
       .header(RESET_PASSWORD_HEADER, token)
       .status(200)
-      .json({ success: true, message: 'Request was send successfully' })
+      .json({ success: true, message: 'Request was send successfully' }),
+
+  successfullyUpdate: (res) =>
+    res.status(200).json({ success: true, message: 'Updated successfully' })
 }
 module.exports = { userResponse }

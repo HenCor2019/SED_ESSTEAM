@@ -21,6 +21,12 @@ const userService = {
     return new ServiceResponse(true, user)
   },
 
+  findOneById: async (id) => {
+    const user = await userRepository.findOneById(id)
+
+    return new ServiceResponse(true, user)
+  },
+
   register: async (body) => {
     const { password } = body
 
@@ -50,15 +56,27 @@ const userService = {
     return { token }
   },
 
-  comparePasswords: (plainPassword, hashedPassword) => {
-    const passwordAreEquals = hashingService.compareHash(
+  comparePasswords: async (plainPassword, hashedPassword) => {
+    const passwordAreEquals = await hashingService.compareHash(
       plainPassword,
       hashedPassword
     )
 
-    if (!passwordAreEquals) {
+    if (!passwordAreEquals)
       throw new ErrorResponse('LoginError', 'User and password not match')
+  },
+
+  update: async (user) => {
+    if (user?.newPassword) {
+      const hashedPassword = await hashingService.generateHash(
+        user.newPassword,
+        SALT
+      )
+      user.hashedPassword = hashedPassword
     }
+
+    const updatedUser = await userRepository.update(user)
+    return updatedUser
   }
 }
 

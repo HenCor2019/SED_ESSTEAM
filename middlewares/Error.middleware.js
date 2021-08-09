@@ -20,6 +20,9 @@ const HANDLER_ERRORS = {
   JsonWebTokenError: (res, { message }) =>
     res.status(409).json({ success: false, message }),
 
+  TokenExpiredError: (res, { message }) =>
+    res.status(409).json({ success: false, message: 'Invalid token' }),
+
   LoginError: (res, { message }) =>
     res.status(400).json({ success: false, message }),
 
