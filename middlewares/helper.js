@@ -1,4 +1,4 @@
-const HANDLER_ERRORS = {
+module.exports = HANDLER_ERRORS = {
   CastError: (res, { message }) =>
     res.status(400).json({ success: false, message: 'Id is malformed' }),
 
@@ -32,9 +32,4 @@ const HANDLER_ERRORS = {
       .status(500)
       .json({ success: false, message: 'Something was wrong' })
   }
-}
-
-module.exports = (error, req, res, next) => {
-  const handler = HANDLER_ERRORS[error.name] || HANDLER_ERRORS.defaultError
-  handler(res, error)
 }

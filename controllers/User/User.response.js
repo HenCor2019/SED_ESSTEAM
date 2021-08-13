@@ -21,7 +21,12 @@ const userResponse = {
   successfullyUpdate: (res) =>
     res.status(200).json({ success: true, message: 'Updated successfully' }),
 
-  successfullyDelete: (res) =>
-    res.status(200).json({ success: true, message: 'Deleted successfully' })
+  successfullyDelete: (res, count) =>
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: `${count} files was deleted successfully`
+      })
 }
 module.exports = { userResponse }

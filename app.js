@@ -1,10 +1,12 @@
 require('dotenv').config()
+require('express-async-errors')
 
 const http = require('http')
 const cors = require('cors')
 const express = require('express')
 const database = require('./utils/database')
 const userRouter = require('./routes/User/User.router')
+const { middleware } = require('./middlewares/middleware')
 const handlerErrors = require('./middlewares/Error.middleware')
 
 const app = express()
@@ -28,4 +30,5 @@ server.on('listening', () => {
 })
 
 app.use('/api/v1', userRouter)
-app.use(handlerErrors)
+app.use(middleware.errorHandling)
+app.use(middleware.unknownEndpoint)

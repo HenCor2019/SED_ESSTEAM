@@ -83,7 +83,7 @@ const userService = {
 
   deleteOneById: (id) => userRepository.deleteOneById(id),
 
-  deleteALl: () => userRepository.deleteAll(id)
+  deleteAll: () => userRepository.deleteAll()
 }
 
 module.exports = { userService }
