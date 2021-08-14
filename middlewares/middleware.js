@@ -2,15 +2,9 @@ const ErrorResponse = require('../classes/ErrorResponse')
 const { tokens } = require('../utils/tokens')
 const HANDLER_ERRORS = require('./helper')
 
-const {
-  TOKEN_RESET_PASSWORD_KEY,
-  RESET_PASSWORD_HEADER,
-  TOKEN_LOGIN_KEY,
-  TOKEN_LOGIN_HEADER
-} = process.env
-
 const middleware = {
   resetPassword: async (req, res, next) => {
+    const { RESET_PASSWORD_HEADER, TOKEN_RESET_PASSWORD_KEY } = process.env
     const token = req.header(RESET_PASSWORD_HEADER)
 
     if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
@@ -22,6 +16,7 @@ const middleware = {
   },
 
   updateUser: async (req, res, next) => {
+    const { TOKEN_LOGIN_KEY, TOKEN_LOGIN_HEADER } = process.env
     const token = req.header(TOKEN_LOGIN_HEADER)
     if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
     const { content } = tokens.verifyToken(token, TOKEN_LOGIN_KEY)
@@ -31,6 +26,7 @@ const middleware = {
   },
 
   errorHandling: (error, req, res, next) => {
+    console.log(error.name)
     const handler = HANDLER_ERRORS[error.name] || HANDLER_ERRORS.defaultError
     handler(res, error)
   },

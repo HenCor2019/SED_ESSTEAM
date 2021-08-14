@@ -1,14 +1,16 @@
 const jwt = require('jsonwebtoken')
 const ServiceResponse = require('../classes/ServiceResponse')
-const { TOKEN_LOGIN_KEY, TOKEN_RESET_PASSWORD_KEY } = process.env
 
 const tokens = {
-  createLoginToken: (payload) =>
-    jwt.sign(payload, TOKEN_LOGIN_KEY, { expiresIn: '1d' }),
+  createLoginToken: (payload) => {
+    const { TOKEN_LOGIN_KEY } = process.env
+    return jwt.sign(payload, TOKEN_LOGIN_KEY, { expiresIn: '1d' })
+  },
 
-  // TODO: (change expiresIn)
-  createResetPasswordToken: ({ id }) =>
-    jwt.sign({ id }, TOKEN_RESET_PASSWORD_KEY, { expiresIn: '1d' }),
+  createResetPasswordToken: ({ id }) => {
+    const { TOKEN_RESET_PASSWORD_KEY } = process.env
+    return jwt.sign({ id }, TOKEN_RESET_PASSWORD_KEY, { expiresIn: '15m' })
+  },
 
   verifyToken: (token, secretKey) => {
     const verifiedToken = jwt.verify(token, secretKey)

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
-const DB_URI = process.env.MONGO_URI
+
+const DB_URI = (NODE_ENV = 'test'
+  ? process.env.MONGO_URI_TEST
+  : process.env.MONGO_URI)
 
 const connect = async () => {
   try {

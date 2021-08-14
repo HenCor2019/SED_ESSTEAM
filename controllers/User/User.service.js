@@ -27,6 +27,12 @@ const userService = {
     return new ServiceResponse(true, user)
   },
 
+  find: async () => {
+    const users = await userRepository.find()
+
+    return new ServiceResponse(true, users)
+  },
+
   register: async (body) => {
     const { password } = body
 
@@ -36,7 +42,7 @@ const userService = {
     const userSaved = await userRepository.create(body)
     if (!userSaved) throw new ErrorResponse('SaveError', 'Cannot save the user')
 
-    await emailing.sendRegisterEmail(userSaved)
+    // await emailing.sendRegisterEmail(userSaved)
   },
 
   sendRequestPasswordEmail: async (body) => {

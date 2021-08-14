@@ -32,3 +32,5 @@ server.on('listening', () => {
 app.use('/api/v1', userRouter)
 app.use(middleware.errorHandling)
 app.use(middleware.unknownEndpoint)
+
+module.exports = app

@@ -22,6 +22,8 @@ const userRepository = {
     return user
   },
 
+  find: async () => await User.find({}),
+
   create: async ({ fullname, username, email, hashedPassword }) => {
     const newUser = new User({ fullname, username, email, hashedPassword })
 
