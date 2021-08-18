@@ -1,25 +1,8 @@
-const request = require('supertest')
 const mongoose = require('mongoose')
 const { userService } = require('../controllers/User/User.service')
-const app = require('../app')
+const { api, initialUsers } = require('./helper')
 
-const api = request(app)
-
-const initialUsers = [
-  {
-    fullname: 'Henry Alexander Cortez',
-    username: 'HenCor',
-    password: '12345',
-    email: '00095119@uca.edu.sv'
-  },
-
-  {
-    fullname: 'Henry Alexander Amaya',
-    username: 'HenCor2019',
-    password: '12345',
-    email: 'henry200amaya@gmail.com'
-  }
-]
+console.log({ api, initialUsers })
 
 beforeAll(async () => {
   await userService.deleteAll()
@@ -55,13 +38,13 @@ test('User is added when all files are correctly', async () => {
     email: 'userTest@gmail.com'
   }
 
-  await api.post('/api/v1/signin').send(userTest)
+  await api.post('/api/v1/signin').send(userTest).expect(201)
   const { content: users } = await userService.find()
 
   expect(users).toHaveLength(initialUsers.length + 1)
 })
 
-test('Unauthorized login when user and password not match', async () => {
+test('Bad request login when user and password not match', async () => {
   const userTest = {
     field: '00095119@uca.edu.sv',
     password: '1234r5312kdlkfjdl'
@@ -76,7 +59,7 @@ test('Returned a token with successfully login', async () => {
     password: '12345'
   }
 
-  const response = await api.post('/api/v1/login').send(userTest)
+  const response = await api.post('/api/v1/login').send(userTest).expect(200)
   expect('token' in response.body).toBe(true)
 })
 

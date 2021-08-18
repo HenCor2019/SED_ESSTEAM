@@ -7,7 +7,6 @@ const express = require('express')
 const database = require('./utils/database')
 const userRouter = require('./routes/User/User.router')
 const { middleware } = require('./middlewares/middleware')
-const handlerErrors = require('./middlewares/Error.middleware')
 
 const app = express()
 const port = process.env.PORT || 5000
