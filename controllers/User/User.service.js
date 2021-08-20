@@ -42,6 +42,7 @@ const userService = {
     const userSaved = await userRepository.create(body)
     if (!userSaved) throw new ErrorResponse('SaveError', 'Cannot save the user')
 
+    // TODO: comment for test
     // await emailing.sendRegisterEmail(userSaved)
   },
 
@@ -57,7 +58,7 @@ const userService = {
     const token = tokens.createResetPasswordToken(user)
 
     user.token = token
-    await emailing.sendRequestPasswordEmail(user)
+    // await emailing.sendRequestPasswordEmail(user)
 
     return { token }
   },

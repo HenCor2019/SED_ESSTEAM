@@ -28,8 +28,8 @@ server.on('listening', () => {
   console.log(`Listening on port ${port}`)
 })
 
-app.use('/api/v1', userRouter)
+app.use('/api/v1/user/', userRouter)
 app.use(middleware.errorHandling)
 app.use(middleware.unknownEndpoint)
 
-module.exports = app
+module.exports = { app, server }

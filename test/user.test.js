@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const { userService } = require('../controllers/User/User.service')
-const { api, initialUsers } = require('./helper')
-
-console.log({ api, initialUsers })
+const { api, initialUsers, server } = require('./helper')
 
 beforeAll(async () => {
   await userService.deleteAll()
@@ -59,8 +57,9 @@ test('Returned a token with successfully login', async () => {
     password: '12345'
   }
 
-  const response = await api.post('/api/v1/login').send(userTest).expect(200)
-  expect('token' in response.body).toBe(true)
+  const { text } = await api.post('/api/v1/login').send(userTest).expect(200)
+  const response = JSON.parse(text)
+  expect(response).toHaveProperty('success', true)
 })
 
 test('Returned unauthorized status code with missing header on handler password', async () => {
@@ -76,4 +75,5 @@ test('Returned unauthorized status code with invalid token on handler password',
 
 afterAll(() => {
   mongoose.connection.close()
+  server.close()
 })

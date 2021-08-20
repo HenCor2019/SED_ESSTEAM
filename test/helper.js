@@ -1,4 +1,4 @@
-const app = require('../app')
+const { app, server } = require('../app')
 const request = require('supertest')
 
 const api = request(app)
@@ -19,4 +19,4 @@ const initialUsers = [
   }
 ]
 
-module.exports = { api, initialUsers }
+module.exports = { api, initialUsers, server }

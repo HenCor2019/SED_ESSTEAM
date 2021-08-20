@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 
-const DB_URI = (NODE_ENV = 'test'
-  ? process.env.MONGO_URI_TEST
-  : process.env.MONGO_URI)
+const DB_URI =
+  process.env.NODE_ENV === 'test'
+    ? process.env.MONGO_URI_TEST
+    : process.env.MONGO_URI
 
 const connect = async () => {
   try {
@@ -15,6 +16,7 @@ const connect = async () => {
     console.log('Database connected')
   } catch (error) {
     console.error({ error })
+    mongoose.connection.close()
   }
 }
 module.exports = { connect }

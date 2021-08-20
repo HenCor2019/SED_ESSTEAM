@@ -9,6 +9,7 @@ const skeletons = {
      <h2>Thank you for signing up for HenCor corp We're so excited for you!</h2>
     `
   }),
+
   requestPassword: ({ username, email, token }) => ({
     to: email,
     from: SENGRID_MAIL,

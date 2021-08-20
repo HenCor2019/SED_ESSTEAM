@@ -1,12 +1,4 @@
-const {
-  register,
-  login,
-  requestPassword,
-  requestPasswordHandler,
-  updateUser,
-  deleteUser,
-  deleteAll
-} = require('../../controllers/User/User.controller')
+const { register, login, requestPassword, requestPasswordHandler, updateUser, deleteUser, deleteAll } = require('../../controllers/User/User.controller')
 
 const { middleware } = require('../../middlewares/middleware')
 

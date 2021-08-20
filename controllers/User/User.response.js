@@ -9,22 +9,29 @@ const userResponse = {
     const payload = { id, fullname, username, email }
     const token = tokens.createLoginToken(payload)
 
-    return res.status(200).json({ success: true, token })
+    return res.status(200).json({ success: true, token }).end()
   },
 
   successfullyRequest: (res, token) =>
     res
       .header(RESET_PASSWORD_HEADER, token)
       .status(200)
-      .json({ success: true, message: 'Request was send successfully' }),
+      .json({ success: true, message: 'Request was send successfully' })
+      .end(),
 
   successfullyUpdate: (res) =>
-    res.status(200).json({ success: true, message: 'Updated successfully' }),
+    res
+      .status(200)
+      .json({ success: true, message: 'Updated successfully' })
+      .end(),
 
   successfullyDelete: (res, count) =>
-    res.status(200).json({
-      success: true,
-      message: `${count} files was deleted successfully`
-    })
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: `${count} files was deleted successfully`
+      })
+      .end()
 }
 module.exports = { userResponse }
