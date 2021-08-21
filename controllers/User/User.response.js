@@ -5,8 +5,8 @@ const userResponse = {
   successfullyRegister: (res) =>
     res.status(201).json({ success: true, message: 'User was created' }),
 
-  successfullyLogin: (res, { id, fullname, username, email }) => {
-    const payload = { id, fullname, username, email }
+  successfullyLogin: (res, { id, fullname, username, email, role }) => {
+    const payload = { id, fullname, username, email, role }
     const token = tokens.createLoginToken(payload)
 
     return res.status(200).json({ success: true, token }).end()

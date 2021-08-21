@@ -20,6 +20,26 @@ const userValidator = {
     return schema.validateAsync(data)
   },
 
+  validateUserInformation: (data) => {
+    const schema = Joi.object({
+      id: Joi.string().required(),
+      fullname: Joi.string().required(),
+      username: Joi.string().required(),
+      email: Joi.string().email().required(),
+      role: Joi.string().required()
+    })
+
+    return schema.validateAsync(data)
+  },
+
+  validateRequestPassword: (data) => {
+    const schema = Joi.object({
+      id: Joi.string().required()
+    })
+
+    return schema.validateAsync(data)
+  },
+
   requestPassword: (data) => {
     const schema = Joi.object({
       field: Joi.string().required()
@@ -38,7 +58,6 @@ const userValidator = {
 
   update: (data) => {
     const schema = Joi.object({
-      id: Joi.string().required(),
       fullname: Joi.string(),
       username: Joi.string(),
       email: Joi.string().email()

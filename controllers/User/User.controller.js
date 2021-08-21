@@ -40,9 +40,10 @@ const userController = {
   },
 
   requestPasswordHandler: async (req, res) => {
+    await userValidator.validateRequestPassword(req.user)
     await userValidator.resetPassword(req.body)
 
-    const { id } = req.userContent
+    const { id } = req.user
     const { content: user } = await userService.findOneById(id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
@@ -54,16 +55,15 @@ const userController = {
   },
 
   updateUser: async (req, res) => {
+    await userValidator.validateUserInformation(req.user)
     await userValidator.update(req.body)
-    const { content: users } = await userService.findByUsernameOrEmail(req.body)
 
-    const { content: user } = await userService.findOneById(req.body.id)
+    const { content: users } = await userService.findByUsernameOrEmail(req.body)
+    const { content: user } = await userService.findOneById(req.user.id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot update user')
 
-    const usersId = users.map(({ id }) => id).filter((id) => id != req.body.id)
-
-    if (usersId.length)
+    if (!uniqueFields(users, user))
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
 
     await userService.updateById(validateNullFields(req.body, user))
@@ -96,5 +96,11 @@ const validateNullFields = (body, user) => ({
   email: body.email || user.email,
   hashedPassword: user.hashedPassword
 })
+
+const uniqueFields = (users, user) => {
+  const usersId = users.map(({ id }) => id).filter((id) => id != user.id)
+
+  return usersId.length === 0
+}
 
 module.exports = userController

@@ -1,6 +1,11 @@
-const ErrorResponse = require('../classes/ErrorResponse')
 const { tokens } = require('../utils/tokens')
-const HANDLER_ERRORS = require('./helper')
+const ErrorResponse = require('../classes/ErrorResponse')
+const {
+  HANDLER_ERRORS,
+  includeAdminRole,
+  includeRole,
+  startWithBearerSign
+} = require('./helper')
 
 const middleware = {
   resetPassword: async (req, res, next) => {
@@ -11,17 +16,42 @@ const middleware = {
 
     const { content } = tokens.verifyToken(token, TOKEN_RESET_PASSWORD_KEY)
 
-    req.userContent = content
+    req.user = content
     next()
   },
 
-  updateUser: async (req, res, next) => {
-    const { TOKEN_LOGIN_KEY, TOKEN_LOGIN_HEADER } = process.env
-    const token = req.header(TOKEN_LOGIN_HEADER)
-    if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
-    const { content } = tokens.verifyToken(token, TOKEN_LOGIN_KEY)
+  authUser: (req, res, next) => {
+    const { TOKEN_LOGIN_KEY } = process.env
+    const authorization = req.get('Authorization')
 
-    req.body.id = content.id
+    if (!(authorization && startWithBearerSign(authorization)))
+      throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    const [_, token] = authorization.split(' ')
+    if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    const { success, content } = tokens.verifyToken(token, TOKEN_LOGIN_KEY)
+    if (!success) throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    if (!includeRole(content))
+      throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    const userInformation = {
+      id: content.id,
+      fullname: content.fullname,
+      username: content.username,
+      email: content.email,
+      role: content.role
+    }
+
+    req.user = userInformation
+    next()
+  },
+
+  isAdmin: (req, res, next) => {
+    if (!includeAdminRole(req.user))
+      throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
     next()
   },
 

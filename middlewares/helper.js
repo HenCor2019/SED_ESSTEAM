@@ -1,4 +1,4 @@
-module.exports = HANDLER_ERRORS = {
+HANDLER_ERRORS = {
   CastError: (res, { message }) =>
     res.status(400).json({ success: false, message: 'Id is malformed' }).end(),
 
@@ -33,4 +33,30 @@ module.exports = HANDLER_ERRORS = {
       .json({ success: false, message: 'Something was wrong' })
       .end()
   }
+}
+
+function includeRole({ role }) {
+  const { ADMIN_ROLE, USER_ROLE } = process.env
+  const roles = [ADMIN_ROLE, USER_ROLE]
+
+  return roles.includes(role)
+}
+
+function includeAdminRole({ role }) {
+  const { ADMIN_ROLE } = process.env
+
+  return ADMIN_ROLE === role
+}
+
+function startWithBearerSign(authorization) {
+  const BEARER = 'bearer'
+
+  return authorization.toLowerCase().startsWith(BEARER)
+}
+
+module.exports = {
+  HANDLER_ERRORS,
+  includeAdminRole,
+  includeRole,
+  startWithBearerSign
 }

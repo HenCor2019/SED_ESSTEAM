@@ -6,6 +6,7 @@ const cors = require('cors')
 const express = require('express')
 const database = require('./utils/database')
 const userRouter = require('./routes/User/User.router')
+const gameRouter = require('./routes/Games/Game.router')
 const { middleware } = require('./middlewares/middleware')
 
 const app = express()
@@ -28,7 +29,8 @@ server.on('listening', () => {
   console.log(`Listening on port ${port}`)
 })
 
-app.use('/api/v1/user/', userRouter)
+app.use('/api/v1/user', userRouter)
+app.use('/api/v1/game', gameRouter)
 app.use(middleware.errorHandling)
 app.use(middleware.unknownEndpoint)
 
