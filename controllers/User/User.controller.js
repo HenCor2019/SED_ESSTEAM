@@ -1,6 +1,7 @@
-const { userResponse } = require('./User.response')
-const { userService } = require('./User.service')
-const { userValidator } = require('./User.validator')
+const { userService } = require('../../services/User.service')
+const { userResponse } = require('../../responses/User.response')
+const { userValidator } = require('../../validators/User.validator')
+const { uniqueFields } = require('../../utils/helper')
 const ErrorResponse = require('../../classes/ErrorResponse')
 
 const userController = {
@@ -96,11 +97,5 @@ const validateNullFields = (body, user) => ({
   email: body.email || user.email,
   hashedPassword: user.hashedPassword
 })
-
-const uniqueFields = (users, user) => {
-  const usersId = users.map(({ id }) => id).filter((id) => id != user.id)
-
-  return usersId.length === 0
-}
 
 module.exports = userController

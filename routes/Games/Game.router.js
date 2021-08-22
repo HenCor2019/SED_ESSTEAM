@@ -1,15 +1,21 @@
 const router = require('express').Router()
-const { upload } = require('../../utils/multer')
+const { upload } = require('../../config/multer')
 
-const { insertNewGame } = require('../../controllers/Games/Game.controller')
+const {
+  insertNewGame,
+  updateGame,
+  deleteGame,
+  allGames
+} = require('../../controllers/Games/Game.controller')
+
 const { middleware } = require('../../middlewares/middleware')
 
-router.post(
-  '/',
-  middleware.authUser,
-  middleware.isAdmin,
-  upload.single('image'),
-  insertNewGame
-)
+router.use('/', middleware.authUser)
+router.use('/', middleware.isAdmin)
+
+router.get('/', allGames)
+router.post('/', upload.single('image'), insertNewGame)
+router.put('/:id', updateGame)
+router.delete('/:id', deleteGame)
 
 module.exports = router

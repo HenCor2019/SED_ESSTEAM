@@ -1,4 +1,4 @@
-const { tokens } = require('../utils/tokens')
+const { tokens } = require('../config/tokens')
 const ErrorResponse = require('../classes/ErrorResponse')
 const {
   HANDLER_ERRORS,
