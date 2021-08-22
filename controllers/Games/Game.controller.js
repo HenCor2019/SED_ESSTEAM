@@ -2,18 +2,21 @@ const gameResponse = require('./Game.response')
 const gamesServices = require('./Game.service')
 const gameValidator = require('./Game.validator')
 const ErrorResponse = require('../../classes/ErrorResponse')
+const { createGameBody } = require('./helper')
 
 const gameController = {
   insertNewGame: async (req, res) => {
-    await gameValidator.validateInsert(req.body)
+    await gameValidator.validateFormData(req.body)
+    const newGame = createGameBody(req)
+    await gameValidator.validateNewGame(newGame)
 
-    const { content: game } = await gamesServices.findOneByTitle(req.body)
+    const { content: game } = await gamesServices.findOneByTitle(newGame)
     if (game) throw new ErrorResponse('RepeatError', 'Title already exist')
 
-    const { content: newGame } = await gamesServices.insertNewGame(req.body)
-    if (!newGame) throw new ErrorResponse('SaveError', 'Cannot save the game')
+    const { content: savedGame } = await gamesServices.insertNewGame(newGame)
+    if (!savedGame) throw new ErrorResponse('SaveError', 'Cannot save the game')
 
-    return gameResponse.successfullySave(res, newGame)
+    return gameResponse.successfullySave(res, savedGame)
   },
 
   updateGame: async (req, res) => {

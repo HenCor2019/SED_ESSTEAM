@@ -1,13 +1,13 @@
 const Joi = require('joi')
 
 const gameValidator = {
-  validateInsert: (data) => {
+  validateNewGame: (data) => {
     const schema = Joi.object({
       title: Joi.string().min(5).max(30).required(),
-      thumbnail: Joi.string().required(),
+      thumbnail: Joi.string().uri().required(),
       description: Joi.string().min(20).max(50).required(),
       discount: Joi.number().min(0).max(1),
-      basePrice: Joi.number().min(0),
+      basePrice: Joi.number().min(0).required(),
       creator: Joi.string(),
       platforms: Joi.array()
         .items(Joi.string().valid('pc', 'playstation', 'xbox', 'switch'))
@@ -19,6 +19,14 @@ const gameValidator = {
         .unique()
         .min(1)
         .required()
+    })
+
+    return schema.validateAsync(data)
+  },
+
+  validateFormData: (data) => {
+    const schema = Joi.object({
+      information: Joi.string().required()
     })
 
     return schema.validateAsync(data)

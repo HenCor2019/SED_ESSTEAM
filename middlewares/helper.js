@@ -14,6 +14,15 @@ HANDLER_ERRORS = {
   UnExistError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),
 
+  InvalidImage: (res, { message }) =>
+    res.status(400).json({ success: false, message }).end(),
+
+  SyntaxError: (res, { message }) =>
+    res.status(405).json({ success: false, message: 'Information malformed' }),
+
+  MulterError: (res, { message }) =>
+    res.status(400).json({ success: false, message }),
+
   UnauthorizedError: (res, { message }) =>
     res.status(401).json({ success: false, message }).end(),
 
