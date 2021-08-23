@@ -8,6 +8,7 @@ const express = require('express')
 const database = require('./config/database')
 const userRouter = require('./routes/User/User.router')
 const gameRouter = require('./routes/Games/Game.router')
+const searchRouter = require('./routes/Search/Search.router')
 const { middleware } = require('./middlewares/middleware')
 
 const app = express()
@@ -33,6 +34,7 @@ server.on('listening', () => {
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/game', gameRouter)
+app.use('/api/v1/search', searchRouter)
 app.use(middleware.errorHandling)
 app.use(middleware.unknownEndpoint)
 

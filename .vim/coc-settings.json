@@ -4,6 +4,8 @@
     "SENGRID",
     "alphanum",
     "fullname",
-    "middlewares"
+    "maxprice",
+    "middlewares",
+    "minprice"
   ]
 }

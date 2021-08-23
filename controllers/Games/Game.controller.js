@@ -7,6 +7,7 @@ const gameValidator = require('../../validators/Game.validator')
 
 const gameController = {
   insertNewGame: async (req, res) => {
+    console.log(req.body)
     await gameValidator.validateFormData(req.body)
     const newGame = createGameBody(req)
     await gameValidator.validateNewGame(newGame)

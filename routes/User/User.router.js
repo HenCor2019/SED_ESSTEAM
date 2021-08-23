@@ -17,8 +17,8 @@ router.post('/login', login)
 router.post('/request-password', requestPassword)
 
 router.put('/reset-password', middleware.resetPassword, requestPasswordHandler)
-router.put('/update', middleware.authUser, updateUser)
-router.delete('/delete/:id', deleteUser)
-router.delete('/delete/', deleteAll)
+router.put('/', middleware.authUser, updateUser)
+router.delete('/:id', middleware.authUser, middleware.isAdmin,  deleteUser)
+router.delete('/',  middleware.authUser, middleware.isAdmin,deleteAll)
 
 module.exports = router

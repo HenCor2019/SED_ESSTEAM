@@ -27,10 +27,10 @@ HANDLER_ERRORS = {
     res.status(401).json({ success: false, message }).end(),
 
   JsonWebTokenError: (res, { message }) =>
-    res.status(409).json({ success: false, message }).end(),
+    res.status(401).json({ success: false, message }).end(),
 
   TokenExpiredError: (res, { message }) =>
-    res.status(409).json({ success: false, message: 'Invalid token' }).end(),
+    res.status(401).json({ success: false, message: 'Invalid token' }).end(),
 
   LoginError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),

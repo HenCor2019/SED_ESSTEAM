@@ -40,11 +40,13 @@ const gameValidator = {
       basePrice: Joi.number().min(0),
       creator: Joi.string(),
       platforms: Joi.array()
-        .items(Joi.string().valid('pc', 'playstation', 'xbox', 'switch'))
+        .items(
+          Joi.string().valid('pc', 'playstation', 'xbox', 'switch').lowercase()
+        )
         .unique()
         .min(1),
       gender: Joi.array()
-        .items(Joi.string().valid('fear', 'single-player'))
+        .items(Joi.string().valid('fear', 'single-player').lowercase())
         .unique()
         .min(1)
     }).min(1)
