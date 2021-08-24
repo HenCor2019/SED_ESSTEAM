@@ -7,10 +7,8 @@ const gameValidator = require('../../validators/Game.validator')
 
 const gameController = {
   insertNewGame: async (req, res) => {
-    console.log(req.body)
-    await gameValidator.validateFormData(req.body)
+    await gameValidator.validateNewGame(req.body)
     const newGame = createGameBody(req)
-    await gameValidator.validateNewGame(newGame)
 
     const { content: game } = await gamesServices.findOneByTitle(newGame)
     if (game) throw new ErrorResponse('RepeatError', 'Title already exist')
@@ -18,7 +16,7 @@ const gameController = {
     const { content: savedGame } = await gamesServices.insertNewGame(newGame)
     if (!savedGame) throw new ErrorResponse('SaveError', 'Cannot save the game')
 
-    return gameResponse.successfullySave(res, savedGame)
+    return gameResponse.successfullySave(res, newGame)
   },
 
   updateGame: async (req, res) => {

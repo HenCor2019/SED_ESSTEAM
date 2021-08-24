@@ -6,7 +6,7 @@ const searchValidator = {
       q: Joi.string().required(),
       mn: Joi.string()
         .regex(/^[0-9]+$/)
-        .message(' minprice must be a number'),
+        .message('minprice must be a number'),
       mx: Joi.string()
         .regex(/^[0-9]+$/)
         .message(' maxprice must be a number'),

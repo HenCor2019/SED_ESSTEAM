@@ -1,16 +1,4 @@
-const PLATFORMS = {
-  pc: ['pc'],
-  playstation: ['playstation'],
-  xbox: ['xbox'],
-  switch: ['switch'],
-  default: ['pc', 'playstation', 'xbox', 'switch']
-}
-
-const GENDERS = {
-  fear: ['fear'],
-  'single-player': ['single-player'],
-  default: ['fear', 'single-player']
-}
+const { PLATFORMS, GENDERS } = require('../../utils/constants')
 
 const transformIntoArray = (base, type) => {
   const typeLowerCase = type.toLowerCase()

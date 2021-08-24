@@ -1,14 +1,12 @@
 const router = require('express').Router()
 const { upload } = require('../../config/multer')
-
+const { middleware } = require('../../middlewares/middleware')
 const {
   insertNewGame,
   updateGame,
   deleteGame,
   allGames
 } = require('../../controllers/Games/Game.controller')
-
-const { middleware } = require('../../middlewares/middleware')
 
 router.use('/', middleware.authUser)
 router.use('/', middleware.isAdmin)
