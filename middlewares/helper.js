@@ -29,6 +29,9 @@ HANDLER_ERRORS = {
   JsonWebTokenError: (res, { message }) =>
     res.status(401).json({ success: false, message }).end(),
 
+  PaymentError: (res, { message }) =>
+    res.status(401).json({ success: false, message }).end(),
+
   TokenExpiredError: (res, { message }) =>
     res.status(401).json({ success: false, message: 'Invalid token' }).end(),
 

@@ -9,9 +9,9 @@ const {
 } = require('../../controllers/Games/Game.controller')
 
 router.use('/', middleware.authUser)
-router.use('/', middleware.isAdmin)
-
 router.get('/', allGames)
+
+router.use('/', middleware.isAdmin)
 router.post('/', upload.single('image'), insertNewGame)
 router.put('/:id', updateGame)
 router.delete('/:id', deleteGame)

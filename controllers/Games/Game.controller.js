@@ -50,7 +50,6 @@ const gameController = {
   allGames: async (req, res) => {
     const { content: games } = await gamesServices.getAllGames()
 
-    console.log({ games })
     return gameResponse.successfullyGames(res, games)
   }
 }

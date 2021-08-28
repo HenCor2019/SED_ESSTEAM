@@ -1,13 +1,12 @@
-const { hashingService } = require('../config/hashingService')
 const { tokens } = require('../config/tokens')
 const { emailing } = require('../config/emailing')
-const { userRepository } = require('../repository/User.repository')
 const ErrorResponse = require('../classes/ErrorResponse')
 const ServiceResponse = require('../classes/ServiceResponse')
+const { hashingService } = require('../config/hashingService')
+const { userRepository } = require('../repository/User.repository')
 
 const { SALT } = process.env
-
-const userService = {
+const userServices = {
   findByUsernameOrEmail: async (body) => {
     const users = await userRepository.findByUsernameOrEmail(body)
 
@@ -77,14 +76,23 @@ const userService = {
 
   updateById: async (user) => {
     if (user?.newPassword) {
-      const hashedPassword = await hashingService.generateHash(
-        user.newPassword,
-        SALT
-      )
-      user.hashedPassword = hashedPassword
+      const { newPassword } = user
+
+      user.hashedPassword = await hashingService.generateHash(newPassword, SALT)
     }
 
     const updatedUser = await userRepository.updateById(user)
+    return new ServiceResponse(true, updatedUser)
+  },
+
+  updateFavoriteGames: async (user) => {
+    await userRepository.updateFavoriteGames(user)
+  },
+
+  updateGames: async (user, newGame) => {
+    user.games = [...user.games, newGame]
+    const updatedUser = await userRepository.updateGames(user)
+
     return new ServiceResponse(true, updatedUser)
   },
 
@@ -93,4 +101,4 @@ const userService = {
   deleteAll: () => userRepository.deleteAll()
 }
 
-module.exports = { userService }
+module.exports = userServices

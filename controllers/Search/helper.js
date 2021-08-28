@@ -1,30 +1,24 @@
 const { PLATFORMS, GENDERS } = require('../../utils/constants')
 
 const transformIntoArray = (base, type) => {
-  const typeLowerCase = type.toLowerCase()
+  const transformedType = !type ? type : type.toLowerCase()
 
-  return base[typeLowerCase] ?? base.default
+  return base[transformedType] ?? base.default
 }
 
 const transformToLowerCase = (word) => word.toLowerCase()
+const isArray = (item) => Array.isArray(item)
 
-const getFilters = ({
-  q,
-  mn = '0',
-  mx = '1000',
-  pt = 'all',
-  gd = 'all',
-  limit = 10
-}) => {
-  const platforms =
-    typeof pt === 'string'
-      ? transformIntoArray(PLATFORMS, pt)
-      : pt.map(transformToLowerCase)
+const getFilters = (game) => {
+  const { q, mn = '0', mx = '100', pt, gd, limit = 10 } = game
 
-  const genders =
-    typeof gd === 'string'
-      ? transformIntoArray(GENDERS, gd)
-      : gd.map(transformToLowerCase)
+  const platforms = !isArray(pt)
+    ? transformIntoArray(PLATFORMS, pt)
+    : pt.map(transformToLowerCase)
+
+  const genders = !isArray(gd)
+    ? transformIntoArray(GENDERS, gd)
+    : gd.map(transformToLowerCase)
 
   return {
     title: q,
@@ -32,7 +26,7 @@ const getFilters = ({
     maxprice: +mx,
     platforms,
     genders,
-    limit
+    limit: +limit
   }
 }
 

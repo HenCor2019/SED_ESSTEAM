@@ -60,7 +60,9 @@ const gameValidator = {
         .items(Joi.string().valid('fear', 'single-player').lowercase())
         .unique()
         .min(1)
-    }).min(1)
+    })
+      .min(1)
+      .required()
 
     return schema.validateAsync(data)
   },
@@ -68,7 +70,7 @@ const gameValidator = {
   validateId: (data) => {
     const schema = Joi.object({
       id: Joi.string().required()
-    })
+    }).required()
 
     return schema.validateAsync(data)
   }

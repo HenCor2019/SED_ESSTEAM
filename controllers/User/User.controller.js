@@ -1,82 +1,106 @@
-const { userService } = require('../../services/User.service')
-const { userResponse } = require('../../responses/User.response')
-const { userValidator } = require('../../validators/User.validator')
-const { uniqueFields } = require('../../utils/helper')
+const { validateNullFields } = require('./helper')
+const userServices = require('../../services/User.service')
+const gameServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
+const userResponse = require('../../responses/User.response')
+const userValidator = require('../../validators/User.validator')
+const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 
 const userController = {
   register: async (req, res) => {
     await userValidator.validateRegister(req.body)
 
-    const { content: users } = await userService.findByUsernameOrEmail(req.body)
+    const { body } = req
+    const { content: users } = await userServices.findByUsernameOrEmail(body)
 
     if (users.length)
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
 
-    await userService.register(req.body)
+    await userServices.register(body)
 
     return userResponse.successfullyRegister(res)
   },
 
   login: async (req, res) => {
     await userValidator.validateLogin(req.body)
-    const { content: user } = await userService.findOneByUsernameOrEmail(
-      req.body
-    )
+
+    const { body } = req
+    const { content: user } = await userServices.findOneByUsernameOrEmail(body)
 
     if (!user)
       throw new ErrorResponse('LoginError', 'User and password not match')
 
-    await userService.comparePasswords(req.body.password, user.hashedPassword)
+    await userServices.comparePasswords(body.password, user.hashedPassword)
 
     return userResponse.successfullyLogin(res, user)
   },
 
   requestPassword: async (req, res) => {
-    await userValidator.requestPassword(req.body)
+    await userValidator.validateRequestPassword(req.body)
 
-    const { token } = await userService.sendRequestPasswordEmail(req.body)
+    const { token } = await userServices.sendRequestPasswordEmail(req.body)
 
     return userResponse.successfullyRequest(res, token)
   },
 
   requestPasswordHandler: async (req, res) => {
-    await userValidator.validateRequestPassword(req.user)
-    await userValidator.resetPassword(req.body)
+    await userValidator.validateResetPassword(req.body)
 
-    const { id } = req.user
-    const { content: user } = await userService.findOneById(id)
+    const { content: user } = await userServices.findOneById(req.user.id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
 
     user.newPassword = req.body.newPassword
-    await userService.updateById(user)
+    await userServices.updateById(user)
 
     return userResponse.successfullyUpdate(res)
   },
 
   updateUser: async (req, res) => {
-    await userValidator.validateUserInformation(req.user)
-    await userValidator.update(req.body)
+    await userValidator.validateId(req.params)
+    await userValidator.validateUpdate(req.body)
 
-    const { content: users } = await userService.findByUsernameOrEmail(req.body)
-    const { content: user } = await userService.findOneById(req.user.id)
+    const { id } = req.params
+    const { body } = req
+
+    const { content: users } = await userServices.findByUsernameOrEmail(body)
+    const { content: user } = await userServices.findOneById(id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot update user')
 
     if (!uniqueFields(users, user))
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
 
-    await userService.updateById(validateNullFields(req.body, user))
+    await userServices.updateById(validateNullFields(body, user))
 
     return userResponse.successfullyUpdate(res)
   },
 
+  updateFavoriteGames: async (req, res) => {
+    await userValidator.validateId(req.body)
+
+    const { id } = req.user
+    const { id: gameId } = req.body
+
+    const { content: user } = await userServices.findOneById(id)
+    const { content: game } = await gameServices.findOneById(gameId)
+
+    if (!user) throw new ErrorResponse('UnExistError', 'User not found')
+    if (!game) throw new ErrorResponse('UnExistError', 'Game not found')
+
+    const { favGames, isFav } = insertOrRemoveGame(user.favoriteGames, game)
+
+    user.favoriteGames = favGames
+    await userServices.updateFavoriteGames(user)
+
+    return userResponse.successfullyUpdate(res, isFav)
+  },
+
   deleteUser: async (req, res) => {
     try {
-      await userValidator.delete(req.params)
+      await userValidator.validateId(req.params)
       const { id } = req.params
-      await userService.deleteOneById(id)
+      await userServices.deleteOneById(id)
 
       return userResponse.successfullyDelete(res)
     } catch (error) {
@@ -85,17 +109,9 @@ const userController = {
   },
 
   deleteAll: async (req, res) => {
-    const { deletedCount = 0 } = await userService.deleteAll()
+    const { deletedCount = 0 } = await userServices.deleteAll()
     return userResponse.successfullyDelete(res, deletedCount)
   }
 }
-
-const validateNullFields = (body, user) => ({
-  id: user.id,
-  fullname: body.fullname || user.fullname,
-  username: body.username || user.username,
-  email: body.email || user.email,
-  hashedPassword: user.hashedPassword
-})
 
 module.exports = userController

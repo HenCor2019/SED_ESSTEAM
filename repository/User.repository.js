@@ -26,23 +26,37 @@ const userRepository = {
 
   create: async ({ fullname, username, email, hashedPassword }) => {
     const newUser = new User({ fullname, username, email, hashedPassword })
-
     const userSaved = await newUser.save()
 
     return userSaved
   },
 
   updateById: async ({ id, username, email, fullname, hashedPassword }) => {
-    await User.findByIdAndUpdate(id, {
-      username,
-      email,
-      fullname,
-      hashedPassword
-    })
+    const newFields = { username, email, fullname, hashedPassword }
+    const options = { new: true }
 
-    const updatedUser = await User.findById(id)
+    const updatedUser = await User.findByIdAndUpdate(id, newFields, options)
+    return updatedUser
+  },
+
+  updateFavoriteGames: async ({ favoriteGames, id }) => {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { favoriteGames },
+      { new: true }
+    )
 
     return updatedUser
+  },
+
+  updateGames: async ({ games, id }) => {
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      { games },
+      { new: true }
+    )
+
+    return updateUser
   },
 
   deleteOneById: (id) => User.findByIdAndDelete(id),

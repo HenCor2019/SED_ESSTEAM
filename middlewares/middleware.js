@@ -36,13 +36,7 @@ const middleware = {
     if (!includeRole(content))
       throw new ErrorResponse('UnauthorizedError', 'Access denied')
 
-    const userInformation = {
-      id: content.id,
-      fullname: content.fullname,
-      username: content.username,
-      email: content.email,
-      role: content.role
-    }
+    const userInformation = { id: content.id }
 
     req.user = userInformation
     next()
@@ -50,8 +44,25 @@ const middleware = {
 
   isAdmin: (req, res, next) => {
     if (!includeAdminRole(req.user))
-      throw new ErrorResponse('UnauthorizedError', 'Access denied')
+      throw new ErrorResponse('UnauthorizedError', 'Unauthorized action')
 
+    next()
+  },
+
+  authPayment: (req, res, next) => {
+    const { PAYMENT_SECRET_KEY } = process.env
+    const token = req.header('auth-payment')
+    const { success, content } = tokens.verifyToken(token, PAYMENT_SECRET_KEY)
+
+    if (!success) throw new ErrorResponse('PaymentError', 'Invalid information')
+
+    const paymentInformation = {
+      intent: content['information'].intent,
+      amount: content['information'].amount,
+      application_context: content['information'].application_context
+    }
+
+    req.paymentInformation = paymentInformation
     next()
   },
 

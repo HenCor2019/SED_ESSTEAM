@@ -19,10 +19,10 @@ const userResponse = {
       .json({ success: true, message: 'Request was send successfully' })
       .end(),
 
-  successfullyUpdate: (res) =>
+  successfullyUpdate: (res, isFavorite) =>
     res
       .status(200)
-      .json({ success: true, message: 'Updated successfully' })
+      .json({ success: true, message: 'Updated successfully', isFavorite })
       .end(),
 
   successfullyDelete: (res, count) =>
@@ -34,4 +34,5 @@ const userResponse = {
       })
       .end()
 }
-module.exports = { userResponse }
+
+module.exports = userResponse

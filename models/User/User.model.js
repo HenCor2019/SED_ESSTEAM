@@ -1,12 +1,14 @@
 const { Schema, model } = require('mongoose')
 
 const UserSchema = new Schema({
-  fullname: String,
-  username: { type: String, unique: true },
-  email: { type: String, unique: true },
-  active: { type: Boolean },
-  hashedPassword: { type: String },
-  role: { type: String, default: process.env.USER_ROLE }
+  fullname: { type: String, required: true },
+  email: { type: String, unique: true, required: true },
+  username: { type: String, unique: true, required: true },
+  active: { type: Boolean, default: false },
+  hashedPassword: { type: String, required: true },
+  role: { type: String, default: process.env.USER_ROLE },
+  favoriteGames: [{ type: Schema.ObjectId, ref: 'Game', default: [] }],
+  games: [{ type: Schema.ObjectId, ref: 'Payment', default: [] }]
 })
 
 UserSchema.set('toJSON', {

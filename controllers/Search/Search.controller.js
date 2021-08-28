@@ -1,6 +1,7 @@
-const searchValidator = require('../../validators/Search.validator')
-const searchServices = require('../../services/Search.service')
 const { getFilters } = require('./helper')
+const searchServices = require('../../services/Search.service')
+const searchResponse = require('../../responses/Search.response')
+const searchValidator = require('../../validators/Search.validator')
 
 const searchController = {
   findByFilters: async (req, res) => {
@@ -9,7 +10,8 @@ const searchController = {
 
     const { content: games } = await searchServices.findByFilters(filters)
 
-    return res.status(200).json({ status: 200, count: games.length, games })
+    return searchResponse.successfullySearch(res, games)
   }
 }
+
 module.exports = searchController
