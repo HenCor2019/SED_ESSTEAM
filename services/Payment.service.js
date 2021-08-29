@@ -6,6 +6,21 @@ const paymentServices = {
     const savedPayment = await paymentRepository.savePayment(data)
 
     return new ServiceResponse(true, savedPayment)
+  },
+
+  getReports: async (filters) => {
+    const payments = await paymentRepository.getPayments(filters)
+    const mappedPayments = payments.map(({ date, netAmount, game }) => {
+      return {
+        date: date.toString(),
+        currencyCode: netAmount.currencyCode,
+        originalPrice: game.basePrice,
+        discountPrice: netAmount.value,
+        discountLoss: game.basePrice - netAmount.value
+      }
+    })
+
+    return new ServiceResponse(true, mappedPayments)
   }
 }
 

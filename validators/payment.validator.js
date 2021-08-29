@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { transformToNumber } = require('./helper')
 
 const paymentValidator = {
   validateId: (data) => {
@@ -63,6 +64,23 @@ const paymentValidator = {
           .required()
       }).required()
     }).required()
+
+    return scheme.validateAsync(data)
+  },
+
+  validateQuery: (data) => {
+    const scheme = Joi.object({
+      l: Joi.string()
+        .regex(/^[0-9]+$/)
+        .message('limit must be a number')
+        .default(5)
+        .custom(transformToNumber),
+      s: Joi.string()
+        .regex(/^[0-9]+$/)
+        .message('s must be a number')
+        .default(0)
+        .custom(transformToNumber)
+    })
 
     return scheme.validateAsync(data)
   }

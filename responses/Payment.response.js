@@ -18,7 +18,12 @@ const paymentResponse = {
     }),
 
   successfullySaved: (res) =>
-    res.status(200).json({ success: true, message: 'Thanks for your purchase' })
+    res
+      .status(200)
+      .json({ success: true, message: 'Thanks for your purchase' }),
+
+  successfullyReports: (res, payments) =>
+    res.status(200).json({ success: true, payments })
 }
 
 module.exports = paymentResponse

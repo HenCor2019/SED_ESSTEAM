@@ -8,9 +8,8 @@ const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 
 const userController = {
   register: async (req, res) => {
-    await userValidator.validateRegister(req.body)
+    const body = await userValidator.validateRegister(req.body)
 
-    const { body } = req
     const { content: users } = await userServices.findByUsernameOrEmail(body)
 
     if (users.length)
@@ -22,9 +21,8 @@ const userController = {
   },
 
   login: async (req, res) => {
-    await userValidator.validateLogin(req.body)
+    const body = await userValidator.validateLogin(req.body)
 
-    const { body } = req
     const { content: user } = await userServices.findOneByUsernameOrEmail(body)
 
     if (!user)
@@ -36,32 +34,29 @@ const userController = {
   },
 
   requestPassword: async (req, res) => {
-    await userValidator.validateRequestPassword(req.body)
+    const body = await userValidator.validateRequestPassword(req.body)
 
-    const { token } = await userServices.sendRequestPasswordEmail(req.body)
+    const { token } = await userServices.sendRequestPasswordEmail(body)
 
     return userResponse.successfullyRequest(res, token)
   },
 
   requestPasswordHandler: async (req, res) => {
-    await userValidator.validateResetPassword(req.body)
+    const body = await userValidator.validateResetPassword(req.body)
 
     const { content: user } = await userServices.findOneById(req.user.id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
 
-    user.newPassword = req.body.newPassword
+    user.newPassword = body.newPassword
     await userServices.updateById(user)
 
     return userResponse.successfullyUpdate(res)
   },
 
   updateUser: async (req, res) => {
-    await userValidator.validateId(req.params)
-    await userValidator.validateUpdate(req.body)
-
-    const { id } = req.params
-    const { body } = req
+    const { id } = await userValidator.validateId(req.params)
+    const body = await userValidator.validateUpdate(req.body)
 
     const { content: users } = await userServices.findByUsernameOrEmail(body)
     const { content: user } = await userServices.findOneById(id)
@@ -77,10 +72,8 @@ const userController = {
   },
 
   updateFavoriteGames: async (req, res) => {
-    await userValidator.validateId(req.body)
-
+    const { id: gameId } = await userValidator.validateId(req.body)
     const { id } = req.user
-    const { id: gameId } = req.body
 
     const { content: user } = await userServices.findOneById(id)
     const { content: game } = await gameServices.findOneById(gameId)
@@ -97,15 +90,10 @@ const userController = {
   },
 
   deleteUser: async (req, res) => {
-    try {
-      await userValidator.validateId(req.params)
-      const { id } = req.params
-      await userServices.deleteOneById(id)
+    const { id } = await userValidator.validateId(req.params)
+    await userServices.deleteOneById(id)
 
-      return userResponse.successfullyDelete(res)
-    } catch (error) {
-      next(error)
-    }
+    return userResponse.successfullyDelete(res)
   },
 
   deleteAll: async (req, res) => {

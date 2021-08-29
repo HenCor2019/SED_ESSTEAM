@@ -66,6 +66,12 @@ function startWithBearerSign(authorization) {
   return authorization.toLowerCase().startsWith(BEARER)
 }
 
+const getPaymentInfo = (content) => ({
+  intent: content['information'].intent,
+  amount: content['information'].amount,
+  application_context: content['information'].application_context
+})
+
 module.exports = {
   HANDLER_ERRORS,
   includeAdminRole,

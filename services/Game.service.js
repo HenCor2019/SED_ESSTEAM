@@ -19,7 +19,7 @@ const gameServices = {
     return new ServiceResponse(true, game)
   },
 
-  insertNewGame: async (body) => {
+  saveGame: async (body) => {
     const savedGame = await gameRepository.insertNewGame(body)
 
     return new ServiceResponse(true, savedGame)

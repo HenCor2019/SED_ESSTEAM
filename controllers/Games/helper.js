@@ -31,7 +31,7 @@ function createGameBody({ body, file }) {
   }
 }
 
-function createNewGame(preGame, lastGame) {
+function updateGameFields(preGame, lastGame) {
   const newGame = {
     id: lastGame.id,
     title: preGame.title || lastGame.title,
@@ -47,4 +47,4 @@ function createNewGame(preGame, lastGame) {
   return newGame
 }
 
-module.exports = { setUrlImage, createGameBody, createNewGame }
+module.exports = { setUrlImage, createGameBody, updateGameFields }

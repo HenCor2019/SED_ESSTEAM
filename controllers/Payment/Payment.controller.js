@@ -15,11 +15,10 @@ const paymentController = {
     if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
 
     const { content: user } = await userServices.findOneById(req.user.id)
-
     if (!user)
       throw new ErrorResponse('PaymentError', 'Cannot complete the payment')
 
-    if (user.games.includes(idGame))
+    if (user['games'].includes(idGame))
       throw new ErrorResponse('PaymentError', 'Game already purchased')
 
     const payment = generatePayment(game, user)
@@ -57,6 +56,13 @@ const paymentController = {
     await userServices.updateGames(user, game.id)
 
     return paymentResponse.successfullySaved(res)
+  },
+
+  reports: async (req, res) => {
+    const filters = await paymentValidator.validateQuery(req.query)
+    const { content: payments } = await paymentServices.getReports(filters)
+
+    return paymentResponse.successfullyReports(res, payments)
   }
 }
 

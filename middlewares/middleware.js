@@ -4,7 +4,8 @@ const {
   HANDLER_ERRORS,
   includeAdminRole,
   includeRole,
-  startWithBearerSign
+  startWithBearerSign,
+  getPaymentInfo
 } = require('./helper')
 
 const middleware = {
@@ -37,13 +38,15 @@ const middleware = {
       throw new ErrorResponse('UnauthorizedError', 'Access denied')
 
     const userInformation = { id: content.id }
+    const userRole = { role: content.role }
 
     req.user = userInformation
+    req.role = userRole
     next()
   },
 
   isAdmin: (req, res, next) => {
-    if (!includeAdminRole(req.user))
+    if (!includeAdminRole(req.role))
       throw new ErrorResponse('UnauthorizedError', 'Unauthorized action')
 
     next()
@@ -56,11 +59,7 @@ const middleware = {
 
     if (!success) throw new ErrorResponse('PaymentError', 'Invalid information')
 
-    const paymentInformation = {
-      intent: content['information'].intent,
-      amount: content['information'].amount,
-      application_context: content['information'].application_context
-    }
+    const paymentInformation = getPaymentInfo(content)
 
     req.paymentInformation = paymentInformation
     next()
