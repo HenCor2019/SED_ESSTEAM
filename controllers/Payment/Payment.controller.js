@@ -4,12 +4,17 @@ const gamesServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
 const paymentServices = require('../../services/Payment.service')
 const paymentResponse = require('../../responses/Payment.response')
-const paymentValidator = require('../../validators/payment.validator')
-const { auth, generateNewPayment, generatePayment } = require('./helper')
+
+const {
+  auth,
+  generateNewPayment,
+  generatePayment,
+  usersAreNotEquals
+} = require('./helper')
 
 const paymentController = {
   createPayment: async (req, res, next) => {
-    const { id: idGame } = await paymentValidator.validateId(req.body)
+    const { id: idGame } = req.validatedId
 
     const { content: game } = await gamesServices.findOneById(idGame)
     if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
@@ -41,13 +46,19 @@ const paymentController = {
   },
 
   completePayment: async (req, res) => {
-    const validatedPaymentContent =
-      await paymentValidator.validatePaymentContent(req.paymentInformation)
+    const { validatedPayment: validatedPaymentContent, userSession } = req
+
+    const { content: loggedUser } = await userServices.identifyUser(userSession)
+
+    if (!loggedUser) throw new ErrorResponse('LoginError', 'Fields not match')
 
     const { user, game } = validatedPaymentContent.application_context
-    const { content: postUser } = await userServices.findOneById(user.id)
+    const { content: paymentUser } = await userServices.findOneById(user.id)
 
-    if (postUser.games.includes(game.id))
+    if (!usersAreNotEquals(loggedUser, paymentUser))
+      throw new ErrorResponse('PaymentError', 'Unable to process your payment')
+
+    if (paymentUser.games.includes(game.id))
       throw new ErrorResponse('PaymentError', 'Game already purchased')
 
     const newPayment = generateNewPayment(validatedPaymentContent)
@@ -59,7 +70,7 @@ const paymentController = {
   },
 
   reports: async (req, res) => {
-    const filters = await paymentValidator.validateQuery(req.query)
+    const { filters } = req
     const { content: payments } = await paymentServices.getReports(filters)
 
     return paymentResponse.successfullyReports(res, payments)

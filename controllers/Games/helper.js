@@ -1,36 +1,5 @@
 const { PLATFORMS, GENDERS } = require('../../utils/constants')
 
-function setUrlImage(path) {
-  const { BASE_URL_CLIENT } = process.env
-  return `${BASE_URL_CLIENT}${path.substring(7)}`
-}
-
-function transformItemToArray(field, base) {
-  const transformedItem =
-    typeof field === 'string'
-      ? [field.toLowerCase()]
-      : field.map((item) => item.toLowerCase())
-
-  return transformedItem
-}
-
-function createGameBody({ body, file }) {
-  const { title, basePrice, discount = 0, creator, platforms, genders } = body
-
-  const transformedPlatforms = transformItemToArray(platforms, PLATFORMS)
-  const transformedGenders = transformItemToArray(genders, GENDERS)
-
-  return {
-    title,
-    basePrice,
-    discount,
-    creator,
-    platforms: transformedPlatforms,
-    genders: transformedGenders,
-    thumbnail: setUrlImage(file.path)
-  }
-}
-
 function updateGameFields(preGame, lastGame) {
   const newGame = {
     id: lastGame.id,
@@ -47,4 +16,4 @@ function updateGameFields(preGame, lastGame) {
   return newGame
 }
 
-module.exports = { setUrlImage, createGameBody, updateGameFields }
+module.exports = { updateGameFields }

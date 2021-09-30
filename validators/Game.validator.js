@@ -9,7 +9,6 @@ const {
 const gameValidator = {
   validateNewGame: ({ body, file }) => {
     body.path = file.path
-
     const schema = Joi.object({
       title: Joi.string().min(5).max(30).required(),
       description: Joi.string().min(20).max(50).required(),

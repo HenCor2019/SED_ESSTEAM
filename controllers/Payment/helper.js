@@ -30,4 +30,12 @@ const generatePayment = (game, user) => {
   }
 }
 
-module.exports = { auth, generateNewPayment, generatePayment }
+const usersAreNotEquals = (sessionUser, paymentUser) =>
+  sessionUser.id === paymentUser.id
+
+module.exports = {
+  auth,
+  generateNewPayment,
+  generatePayment,
+  usersAreNotEquals
+}

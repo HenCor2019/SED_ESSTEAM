@@ -2,23 +2,16 @@ const Game = require('../models/Games/Game.model')
 
 const searchRepository = {
   findByFilters: async (filters) => {
-    console.log({ filters })
-    const {
-      q: title,
-      mn: minprice,
-      mx: maxprice,
-      pt: platforms,
-      gd: genders,
-      limit
-    } = filters
-    const titlePattern = new RegExp(`^${title}`, 'i')
+    const { q, mn, mx, pt, gd, limit } = filters
+    const titlePattern = new RegExp(`^${q}`, 'i')
+
     const games = await Game.find({
       $and: [
         { title: titlePattern },
-        { platforms: { $in: platforms } },
-        { genders: { $in: genders } },
-        { basePrice: { $gte: minprice } },
-        { basePrice: { $lte: maxprice } }
+        { platforms: { $in: pt } },
+        { genders: { $in: gd } },
+        { basePrice: { $gte: mn } },
+        { basePrice: { $lte: mx } }
       ]
     }).limit(+limit)
 

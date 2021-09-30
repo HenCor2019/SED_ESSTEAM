@@ -10,7 +10,7 @@ const userRepository = {
 
   findOneByUsernameOrEmail: async ({ field }) => {
     const user = await User.findOne({
-      $or: [{ username: field }, { email: new RegExp(`^${field}`, 'i') }]
+      $or: [{ username: field }, { email: field }]
     })
 
     return user

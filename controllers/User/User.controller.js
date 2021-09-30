@@ -3,12 +3,12 @@ const userServices = require('../../services/User.service')
 const gameServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
 const userResponse = require('../../responses/User.response')
-const userValidator = require('../../validators/User.validator')
+const userValidator = require('../../validators/User/User.validator')
 const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 
 const userController = {
   register: async (req, res) => {
-    const body = await userValidator.validateRegister(req.body)
+    const { validatedBody: body } = req
 
     const { content: users } = await userServices.findByUsernameOrEmail(body)
 
@@ -21,8 +21,7 @@ const userController = {
   },
 
   login: async (req, res) => {
-    const body = await userValidator.validateLogin(req.body)
-
+    const { validatedBody: body } = req
     const { content: user } = await userServices.findOneByUsernameOrEmail(body)
 
     if (!user)
@@ -34,17 +33,16 @@ const userController = {
   },
 
   requestPassword: async (req, res) => {
-    const body = await userValidator.validateRequestPassword(req.body)
-
+    const { validatedBody: body } = req
     const { token } = await userServices.sendRequestPasswordEmail(body)
 
     return userResponse.successfullyRequest(res, token)
   },
 
   requestPasswordHandler: async (req, res) => {
-    const body = await userValidator.validateResetPassword(req.body)
-
-    const { content: user } = await userServices.findOneById(req.user.id)
+    const { validatedBody: body } = req
+    const { id } = req.user
+    const { content: user } = await userServices.findOneById(id)
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
 
@@ -55,13 +53,13 @@ const userController = {
   },
 
   updateUser: async (req, res) => {
-    const { id } = await userValidator.validateId(req.params)
-    const body = await userValidator.validateUpdate(req.body)
+    const { id } = req.user
+    const { validatedBody: body } = req
 
     const { content: users } = await userServices.findByUsernameOrEmail(body)
     const { content: user } = await userServices.findOneById(id)
 
-    if (!user) throw new ErrorResponse('UnExistError', 'Cannot update user')
+    if (!user) throw new ErrorResponse('UnExistError', 'User not found')
 
     if (!uniqueFields(users, user))
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
@@ -72,9 +70,10 @@ const userController = {
   },
 
   updateFavoriteGames: async (req, res) => {
-    const { id: gameId } = await userValidator.validateId(req.body)
+    const { id: gameId } = req.validatedId
     const { id } = req.user
 
+    console.log({ gameId })
     const { content: user } = await userServices.findOneById(id)
     const { content: game } = await gameServices.findOneById(gameId)
 
@@ -90,7 +89,7 @@ const userController = {
   },
 
   deleteUser: async (req, res) => {
-    const { id } = await userValidator.validateId(req.params)
+    const { validateId: id } = req
     await userServices.deleteOneById(id)
 
     return userResponse.successfullyDelete(res)

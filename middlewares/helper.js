@@ -76,5 +76,6 @@ module.exports = {
   HANDLER_ERRORS,
   includeAdminRole,
   includeRole,
-  startWithBearerSign
+  startWithBearerSign,
+  getPaymentInfo
 }

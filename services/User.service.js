@@ -74,6 +74,21 @@ const userServices = {
     return new ServiceResponse(true)
   },
 
+  identifyUser: async (body) => {
+    const user = await userRepository.findOneByUsernameOrEmail(body)
+
+    if (!user) return new ServiceResponse(true, null)
+
+    const isCorrectPassword = await hashingService.compareHash(
+      body.password,
+      user.hashedPassword
+    )
+
+    if (!isCorrectPassword) return new ServiceResponse(true, null)
+
+    return new ServiceResponse(false, user)
+  },
+
   updateById: async (user) => {
     if (user?.newPassword) {
       const { newPassword } = user
@@ -86,7 +101,8 @@ const userServices = {
   },
 
   updateFavoriteGames: async (user) => {
-    await userRepository.updateFavoriteGames(user)
+    const updatedUser = await userRepository.updateFavoriteGames(user)
+    return new ServiceResponse(true, updatedUser)
   },
 
   updateGames: async (user, newGame) => {
