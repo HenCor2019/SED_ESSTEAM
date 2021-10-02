@@ -16,16 +16,16 @@ const generatePayment = (game, user) => {
     intent: 'CAPTURE',
     amount: {
       currencyCode: 'USD',
-      value: (1 - game['discount']) * game['basePrice']
+      value: (1 - game.discount) * game.basePrice
     },
     application_context: {
-      brand_name: `ESASteam.com`,
+      brand_name: 'ESASteam.com',
       landing_page: 'NO_PREFERENCE',
       user_action: 'PAY_NOW',
       user: user,
       game: game,
-      return_url: `http://localhost:3000/execute-payment`,
-      cancel_url: `http://localhost:3000/cancel-payment`
+      return_url: 'http://localhost:3000/execute-payment',
+      cancel_url: 'http://localhost:3000/cancel-payment'
     }
   }
 }

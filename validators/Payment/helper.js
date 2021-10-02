@@ -23,7 +23,7 @@ const validatorSchemas = {
       value: Joi.number().min(0).required()
     }).required(),
     application_context: Joi.object({
-      brand_name: Joi.string().valid(`ESASteam.com`).required(),
+      brand_name: Joi.string().valid('ESASteam.com').required(),
       landing_page: Joi.string().valid('NO_PREFERENCE').uppercase().required(),
       user_action: Joi.string().valid('PAY_NOW').uppercase().required(),
       user: Joi.object({
@@ -49,10 +49,10 @@ const validatorSchemas = {
         genders: Joi.array().items(Joi.string())
       }).required(),
       return_url: Joi.string()
-        .valid(`http://localhost:3000/execute-payment`)
+        .valid('http://localhost:3000/execute-payment')
         .required(),
       cancel_url: Joi.string()
-        .valid(`http://localhost:3000/cancel-payment`)
+        .valid('http://localhost:3000/cancel-payment')
         .required()
     }).required()
   }).required(),

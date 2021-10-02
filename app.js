@@ -17,7 +17,7 @@ database.connect()
 
 app.set('port', port)
 app.use(express.json())
-// app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 const server = http.createServer(app)
 server.listen(port)

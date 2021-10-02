@@ -31,8 +31,7 @@ const tokens = {
       const { CLIENT, SECRET } = JSON.parse(auth)
       const { PAYMENT_CLIENT, PAYMENT_SECRET } = process.env
 
-      if (!(CLIENT === PAYMENT_CLIENT && SECRET === PAYMENT_SECRET))
-        return false
+      if (!(CLIENT === PAYMENT_CLIENT && SECRET === PAYMENT_SECRET)) { return false }
 
       return true
     } catch {

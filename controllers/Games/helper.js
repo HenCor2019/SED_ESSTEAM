@@ -1,6 +1,4 @@
-const { PLATFORMS, GENDERS } = require('../../utils/constants')
-
-function updateGameFields(preGame, lastGame) {
+function updateGameFields (preGame, lastGame) {
   const newGame = {
     id: lastGame.id,
     title: preGame.title || lastGame.title,

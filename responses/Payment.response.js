@@ -4,7 +4,7 @@ const paymentResponse = {
       success: false,
       links: {
         rel: 'unapproved',
-        href: `localhost:3000/checkoutfailed`
+        href: 'localhost:3000/checkoutfailed'
       }
     }),
 

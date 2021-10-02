@@ -3,7 +3,6 @@ const userServices = require('../../services/User.service')
 const gameServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
 const userResponse = require('../../responses/User.response')
-const userValidator = require('../../validators/User/User.validator')
 const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 
 const userController = {
@@ -12,8 +11,9 @@ const userController = {
 
     const { content: users } = await userServices.findByUsernameOrEmail(body)
 
-    if (users.length)
+    if (users.length) {
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
+    }
 
     await userServices.register(body)
 
@@ -24,8 +24,9 @@ const userController = {
     const { validatedBody: body } = req
     const { content: user } = await userServices.findOneByUsernameOrEmail(body)
 
-    if (!user)
+    if (!user) {
       throw new ErrorResponse('LoginError', 'User and password not match')
+    }
 
     await userServices.comparePasswords(body.password, user.hashedPassword)
 
@@ -61,8 +62,9 @@ const userController = {
 
     if (!user) throw new ErrorResponse('UnExistError', 'User not found')
 
-    if (!uniqueFields(users, user))
+    if (!uniqueFields(users, user)) {
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
+    }
 
     await userServices.updateById(validateNullFields(body, user))
 

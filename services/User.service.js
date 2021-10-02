@@ -48,11 +48,12 @@ const userServices = {
   sendRequestPasswordEmail: async (body) => {
     const user = await userRepository.findOneByUsernameOrEmail(body)
 
-    if (!user)
+    if (!user) {
       throw new ErrorResponse(
         'UnExistError',
         'Cannot find the username or email!'
       )
+    }
 
     const token = tokens.createResetPasswordToken(user)
 
@@ -68,8 +69,7 @@ const userServices = {
       hashedPassword
     )
 
-    if (!passwordAreEquals)
-      throw new ErrorResponse('LoginError', 'User and password not match')
+    if (!passwordAreEquals) { throw new ErrorResponse('LoginError', 'User and password not match') }
 
     return new ServiceResponse(true)
   },
