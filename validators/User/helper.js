@@ -1,15 +1,25 @@
 const Joi = require('joi')
 
 const validatorSchemas = {
-  registerSchema: Joi.object({
+  preRegisterSchema: Joi.object({
     fullname: Joi.string().min(4).max(40).required(),
-    username: Joi.string().min(4).max(10).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(5).max(16).required()
   }).required(),
 
+  registerSchema: Joi.object({
+    username: Joi.string().min(4).max(10).required(),
+    dob: Joi.string()
+      .regex(
+        /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-](19[1-9][0-9]|20[01][0-9]|202[01])$/
+      )
+      .message(' "dob" invalid')
+      .required(),
+    about: Joi.string().min(10).max(50).required()
+  }),
+
   loginSchema: Joi.object({
-    field: Joi.string().required(),
+    username: Joi.string().required(),
     password: Joi.string().required()
   }).required(),
 

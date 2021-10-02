@@ -3,6 +3,11 @@ const ErrorResponse = require('../classes/ErrorResponse')
 const ServiceResponse = require('../classes/ServiceResponse')
 
 const tokens = {
+  createRegisterToken: (payload) => {
+    const { TOKEN_REGISTER_KEY } = process.env
+    return jwt.sign(payload, TOKEN_REGISTER_KEY, { expiresIn: '1d' })
+  },
+
   createLoginToken: (payload) => {
     const { TOKEN_LOGIN_KEY } = process.env
     return jwt.sign(payload, TOKEN_LOGIN_KEY, { expiresIn: '1d' })
@@ -31,7 +36,9 @@ const tokens = {
       const { CLIENT, SECRET } = JSON.parse(auth)
       const { PAYMENT_CLIENT, PAYMENT_SECRET } = process.env
 
-      if (!(CLIENT === PAYMENT_CLIENT && SECRET === PAYMENT_SECRET)) { return false }
+      if (!(CLIENT === PAYMENT_CLIENT && SECRET === PAYMENT_SECRET)) {
+        return false
+      }
 
       return true
     } catch {

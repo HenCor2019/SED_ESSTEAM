@@ -1,4 +1,5 @@
 const {
+  preRegisterSchema,
   registerSchema,
   loginSchema,
   requestPasswordSchema,
@@ -8,15 +9,21 @@ const {
 } = require('./helper')
 
 const userValidator = {
+  validatePreRegister: async (req, res, next) => {
+    const { body } = req
+    req.validatedBody = await preRegisterSchema.validateAsync(body)
+    next()
+  },
+
   validateRegister: async (req, res, next) => {
     const { body } = req
-    req.validatedBody = await registerSchema.validateAsync(body)
+    req.validatedRegister = await registerSchema.validateAsync(body)
     next()
   },
 
   validateLogin: async (req, res, next) => {
     const { body } = req
-    req.validatedBody = await loginSchema.validateAsync(body)
+    req.validatedLogin = await loginSchema.validateAsync(body)
     next()
   },
 

@@ -1,11 +1,15 @@
 const User = require('../models/User/User.model')
 
 const userRepository = {
-  findByUsernameOrEmail: async ({ username, email }) => {
-    const users = await User.find({
-      $or: [{ username }, { email: new RegExp(`^${email}`, 'i') }]
-    })
-    return users
+  findOneByEmail: async ({ email }) => {
+    const user = await User.findOne({ email: new RegExp(`^${email}`, 'i') })
+
+    return user
+  },
+
+  findOneByUsername: async ({ username }) => {
+    const user = await User.findOne({ username })
+    return user
   },
 
   findOneByUsernameOrEmail: async ({ field }) => {
@@ -31,8 +35,28 @@ const userRepository = {
     return userSaved
   },
 
-  updateById: async ({ id, username, email, fullname, hashedPassword }) => {
-    const newFields = { username, email, fullname, hashedPassword }
+  updateById: async (user) => {
+    const {
+      id,
+      username,
+      email,
+      fullname,
+      hashedPassword,
+      active,
+      dob,
+      about
+    } = user
+
+    const newFields = {
+      username,
+      email,
+      fullname,
+      hashedPassword,
+      active,
+      dob,
+      about
+    }
+
     const options = { new: true }
 
     const updatedUser = await User.findByIdAndUpdate(id, newFields, options)

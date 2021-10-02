@@ -7,10 +7,18 @@ const { userRepository } = require('../repository/User.repository')
 
 const { SALT } = process.env
 const userServices = {
-  findByUsernameOrEmail: async (body) => {
-    const users = await userRepository.findByUsernameOrEmail(body)
+  findOneByEmail: async (body) => {
+    const user = await userRepository.findOneByEmail(body)
 
-    return new ServiceResponse(true, users)
+    return new ServiceResponse(true, user)
+  },
+
+  findOneByUsername: async (body) => {
+    const user = await userRepository.findOneByUsername(body)
+
+    if (!user) return new ServiceResponse(false, user)
+
+    return new ServiceResponse(true, user)
   },
 
   findOneByUsernameOrEmail: async (body) => {
@@ -43,6 +51,7 @@ const userServices = {
 
     // TODO: comment for test
     // await emailing.sendRegisterEmail(userSaved)
+    return new ServiceResponse(true, userSaved)
   },
 
   sendRequestPasswordEmail: async (body) => {
@@ -69,7 +78,9 @@ const userServices = {
       hashedPassword
     )
 
-    if (!passwordAreEquals) { throw new ErrorResponse('LoginError', 'User and password not match') }
+    if (!passwordAreEquals) {
+      throw new ErrorResponse('LoginError', 'User and password not match')
+    }
 
     return new ServiceResponse(true)
   },

@@ -38,6 +38,9 @@ const HANDLER_ERRORS = {
   LoginError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),
 
+  AlreadyRegisterError: (res, { message }) =>
+    res.status(400).json({ success: false, message }).end(),
+
   defaultError: (res, { name, message }) => {
     console.log({ name, message })
     return res
@@ -47,20 +50,20 @@ const HANDLER_ERRORS = {
   }
 }
 
-function includeRole ({ role }) {
+function includeRole({ role }) {
   const { ADMIN_ROLE, USER_ROLE } = process.env
   const roles = [ADMIN_ROLE, USER_ROLE]
 
   return roles.includes(role)
 }
 
-function includeAdminRole ({ role }) {
+function includeAdminRole({ role }) {
   const { ADMIN_ROLE } = process.env
 
   return ADMIN_ROLE === role
 }
 
-function startWithBearerSign (authorization) {
+function startWithBearerSign(authorization) {
   const BEARER = 'bearer'
 
   return authorization.toLowerCase().startsWith(BEARER)

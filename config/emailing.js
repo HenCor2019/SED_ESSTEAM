@@ -5,8 +5,8 @@ const { SENDGRID_API_KEY } = process.env
 sgMail.setApiKey(SENDGRID_API_KEY)
 
 const emailing = {
-  sendRegisterEmail: async ({ email, username }) => {
-    const registerEmail = skeletons.register({ email, username })
+  sendRegisterEmail: async ({ email, fullname, token }) => {
+    const registerEmail = skeletons.register({ email, fullname, token })
     sgMail.send(registerEmail)
   },
 

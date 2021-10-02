@@ -1,9 +1,18 @@
 const { tokens } = require('../config/tokens')
 const { RESET_PASSWORD_HEADER } = process.env
+const { emailing } = require('../config/emailing')
 
 const userResponse = {
-  successfullyRegister: (res) =>
-    res.status(201).json({ success: true, message: 'User was created' }),
+  successfullyRegister: async (res, { id, fullname, active, email }) => {
+    const payload = { id, fullname, active }
+    const token = tokens.createRegisterToken(payload)
+
+    await emailing.sendRegisterEmail({ fullname, email, token })
+    return res
+      .header('pre-register', token)
+      .status(201)
+      .json({ success: true, message: 'User was created' })
+  },
 
   successfullyLogin: (res, { id, fullname, username, email, role }) => {
     const payload = { id, fullname, username, email, role }
