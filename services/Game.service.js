@@ -2,6 +2,12 @@ const gameRepository = require('../repository/Game.repository')
 const ServiceResponse = require('../classes/ServiceResponse')
 
 const gameServices = {
+  find: async () => {
+    const games = await gameRepository.find()
+
+    return new ServiceResponse(true, games)
+  },
+
   findOneByTitle: async ({ title }) => {
     const game = await gameRepository.findOneByTitle(title)
 

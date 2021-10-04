@@ -3,7 +3,7 @@ const userServices = require('../../services/User.service')
 const gamesServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
 const paymentServices = require('../../services/Payment.service')
-const paymentResponse = require('../../responses/Payment.response')
+const paymentResponse = require('../../responses/Payment/Payment.response')
 
 const {
   auth,
@@ -20,9 +20,13 @@ const paymentController = {
     if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
 
     const { content: user } = await userServices.findOneById(req.user.id)
-    if (!user) { throw new ErrorResponse('PaymentError', 'Cannot complete the payment') }
+    if (!user) {
+      throw new ErrorResponse('PaymentError', 'Cannot complete the payment')
+    }
 
-    if (user.games.includes(idGame)) { throw new ErrorResponse('PaymentError', 'Game already purchased') }
+    if (user.games.includes(idGame)) {
+      throw new ErrorResponse('PaymentError', 'Game already purchased')
+    }
 
     const payment = generatePayment(game, user)
 
@@ -53,9 +57,11 @@ const paymentController = {
     const { user, game } = validatedPaymentContent.application_context
     const { content: paymentUser } = await userServices.findOneById(user.id)
 
-    if (!usersAreNotEquals(loggedUser, paymentUser)) { throw new ErrorResponse('PaymentError', 'Unable to process your payment') }
+    if (!usersAreNotEquals(loggedUser, paymentUser))
+      throw new ErrorResponse('PaymentError', 'Unable to process your payment')
 
-    if (paymentUser.games.includes(game.id)) { throw new ErrorResponse('PaymentError', 'Game already purchased') }
+    if (paymentUser.games.includes(game.id))
+      throw new ErrorResponse('PaymentError', 'Game already purchased')
 
     const newPayment = generateNewPayment(validatedPaymentContent)
     await paymentServices.savePayment(newPayment)

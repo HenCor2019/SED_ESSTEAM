@@ -10,13 +10,15 @@ const paymentServices = {
 
   getReports: async (filters) => {
     const payments = await paymentRepository.getPayments(filters)
+
     const mappedPayments = payments.map(({ date, netAmount, game }) => {
       return {
-        date: date.toString(),
+        date: date,
         currencyCode: netAmount.currencyCode,
         originalPrice: game.basePrice,
         discountPrice: netAmount.value,
-        discountLoss: game.basePrice - netAmount.value
+        discountLoss: game.basePrice - netAmount.value,
+        game
       }
     })
 

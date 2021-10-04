@@ -38,9 +38,11 @@ const validatorSchemas = {
       .required(),
     genders: Joi.alternatives()
       .try(
-        Joi.string().valid('fear', 'single-player').lowercase(),
+        Joi.string().valid('action', 'adventures', 'survival').lowercase(),
         Joi.array()
-          .items(Joi.string().valid('fear', 'single-player').lowercase())
+          .items(
+            Joi.string().valid('action', 'adventures', 'survival').lowercase()
+          )
           .unique()
           .min(1)
       )

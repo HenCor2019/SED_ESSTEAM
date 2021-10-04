@@ -1,6 +1,8 @@
 const Game = require('../models/Games/Game.model')
 
 const gameRepository = {
+  find: () => Game.find(),
+
   findOneByTitle: (title) => Game.findOne({ title }),
 
   findByTitle: (title) => Game.find({ title }),

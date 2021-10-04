@@ -1,3 +1,5 @@
+const { createReports } = require('./helper')
+
 const paymentResponse = {
   unapprovedPayment: (res) =>
     res.status(400).json({
@@ -22,8 +24,11 @@ const paymentResponse = {
       .status(200)
       .json({ success: true, message: 'Thanks for your purchase' }),
 
-  successfullyReports: (res, payments) =>
-    res.status(200).json({ success: true, payments })
+  successfullyReports: (res, payments) => {
+    const reports = payments.reduce(createReports, [])
+
+    return res.status(200).json({ success: true, reports })
+  }
 }
 
 module.exports = paymentResponse

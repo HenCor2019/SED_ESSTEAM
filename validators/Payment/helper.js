@@ -35,7 +35,9 @@ const validatorSchemas = {
         hashedPassword: Joi.string(),
         role: Joi.string(),
         favoriteGames: Joi.array().items(Joi.string()),
-        games: Joi.array().items(Joi.string())
+        games: Joi.array().items(Joi.string()),
+        dob: Joi.string(),
+        about: Joi.string()
       }).required(),
       game: Joi.object({
         id: Joi.string().required(),

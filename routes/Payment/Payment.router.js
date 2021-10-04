@@ -10,7 +10,14 @@ const paymentValidator = require('../../validators/Payment/Payment.validator')
 
 const { middleware } = require('../../middlewares/middleware')
 
-router.get('/', middleware.authUser, middleware.isAdmin, reports)
+router.get(
+  '/',
+  middleware.authUser,
+  middleware.isAdmin,
+  paymentValidator.validateQuery,
+  reports
+)
+
 router.post(
   '/create',
   middleware.authUser,
