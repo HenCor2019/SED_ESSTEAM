@@ -4,6 +4,7 @@ const ErrorResponse = require('../classes/ErrorResponse')
 const ServiceResponse = require('../classes/ServiceResponse')
 const { hashingService } = require('../config/hashingService')
 const { userRepository } = require('../repository/User.repository')
+const { questionRepository } = require('../repository/Question.repository')
 
 const { SALT } = process.env
 const userServices = {
@@ -46,6 +47,16 @@ const userServices = {
     const hashedPassword = await hashingService.generateHash(password, SALT)
     body.hashedPassword = hashedPassword
 
+    const hashedResponses = await hashingService.generateResponsesHash(
+      body,
+      SALT
+    )
+
+    const savedResponses = await questionRepository.saveResponse({
+      hashedResponses
+    })
+
+    body.responses = savedResponses
     const userSaved = await userRepository.create(body)
     if (!userSaved) throw new ErrorResponse('SaveError', 'Cannot save the user')
 
@@ -57,14 +68,23 @@ const userServices = {
   sendRequestPasswordEmail: async (body) => {
     const user = await userRepository.findOneByUsernameOrEmail(body)
 
-    if (!user) {
+    if (!user)
       throw new ErrorResponse(
         'UnExistError',
         'Cannot find the username or email!'
       )
-    }
 
     const token = tokens.createResetPasswordToken(user)
+    const sameResponses = await hashingService.compareResponses(
+      body.responses,
+      user.responses.questions
+    )
+
+    if (!sameResponses)
+      throw new ErrorResponse(
+        'UnExistError',
+        'Cannot find the username or email!'
+      )
 
     user.token = token
     // await emailing.sendRequestPasswordEmail(user)
@@ -126,6 +146,16 @@ const userServices = {
   deleteOneById: (id) => userRepository.deleteOneById(id),
 
   deleteAll: () => userRepository.deleteAll()
+}
+
+const areSameResponses = (responses, user) => {
+  const [firstDBResponse, secondDBResponse] = user.responses.questions
+  const [firstRecoverResponse, secondRecoverResponse] = responses
+
+  return (
+    firstDBResponse === firstRecoverResponse &&
+    secondRecoverResponse === secondDBResponse
+  )
 }
 
 module.exports = userServices

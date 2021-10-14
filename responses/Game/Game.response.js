@@ -1,3 +1,5 @@
+const { mapCategories } = require('./helper')
+
 const gameResponse = {
   successfullySave: (res, newGame) =>
     res
@@ -14,8 +16,13 @@ const gameResponse = {
   successfullyDelete: (res) =>
     res.status(200).json({ success: true, message: 'Game was deleted' }),
 
-  successfullyGames: (res, results) =>
-    res.status(200).json({ success: true, count: results.length, results })
+  successfullyGames: (res, games) => {
+    return res.status(200).json({
+      success: true,
+      count: games.length,
+      categories: mapCategories(games)
+    })
+  }
 }
 
 module.exports = gameResponse

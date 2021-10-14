@@ -1,4 +1,4 @@
-function updateGameFields (preGame, lastGame) {
+function updateGameFields(preGame, lastGame) {
   const newGame = {
     id: lastGame.id,
     title: preGame.title || lastGame.title,
@@ -14,4 +14,8 @@ function updateGameFields (preGame, lastGame) {
   return newGame
 }
 
-module.exports = { updateGameFields }
+function generatePattern(accumulator, gender, index) {
+  return index === 0 ? `${gender}` : `${accumulator}|${gender}`
+}
+
+module.exports = { updateGameFields, generatePattern }

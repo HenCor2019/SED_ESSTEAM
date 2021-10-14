@@ -1,14 +1,13 @@
 const { uniqueFields } = require('../../utils/helper')
 const gamesServices = require('../../services/Game.service')
 const ErrorResponse = require('../../classes/ErrorResponse')
-const { updateGameFields } = require('./helper')
-const gameResponse = require('../../responses/Game.response')
+const { updateGameFields, generatePattern } = require('./helper')
+const gameResponse = require('../../responses/Game/Game.response')
 
 const gameController = {
   insertNewGame: async (req, res) => {
     const { validatedGame } = req
 
-    console.log({ validatedGame })
     const { content: game } = await gamesServices.findOneByTitle(validatedGame)
     if (game) throw new ErrorResponse('RepeatError', 'Title already exist')
 
@@ -49,6 +48,23 @@ const gameController = {
     const { content: games } = await gamesServices.getAllGames()
 
     return gameResponse.successfullyGames(res, games)
+  },
+
+  recommendedGames: async (req, res) => {
+    const { validatedId: id } = req
+    const { content: game } = await gamesServices.findOneById(id)
+
+    if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
+
+    const { genders } = game
+    const pattern = genders.reduce(generatePattern, '')
+
+    const filters = { pattern, title: game.title }
+    const { content: similarGames } = await gamesServices.findByGenders(filters)
+
+    return res
+      .status(200)
+      .json({ success: true, count: similarGames.length, similarGames })
   }
 }
 

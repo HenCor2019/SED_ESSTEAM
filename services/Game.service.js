@@ -20,6 +20,12 @@ const gameServices = {
     return new ServiceResponse(true, games)
   },
 
+  findByGenders: async (body) => {
+    const games = await gameRepository.findByGenders(body)
+
+    return new ServiceResponse(true, games)
+  },
+
   findOneById: async (id) => {
     const game = await gameRepository.findOneById(id)
     return new ServiceResponse(true, game)

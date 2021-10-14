@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const { userService } = require('../controllers/User/User.service')
+const userService = require('../services/User.service')
 const { api, initialUsers, server } = require('./helper')
 
 beforeAll(async () => {

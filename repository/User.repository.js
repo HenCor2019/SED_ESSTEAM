@@ -15,7 +15,7 @@ const userRepository = {
   findOneByUsernameOrEmail: async ({ field }) => {
     const user = await User.findOne({
       $or: [{ username: field }, { email: field }]
-    })
+    }).populate('responses')
 
     return user
   },
@@ -28,8 +28,14 @@ const userRepository = {
 
   find: async () => await User.find({}),
 
-  create: async ({ fullname, username, email, hashedPassword }) => {
-    const newUser = new User({ fullname, username, email, hashedPassword })
+  create: async ({ fullname, username, email, hashedPassword, responses }) => {
+    const newUser = new User({
+      fullname,
+      username,
+      email,
+      hashedPassword,
+      responses
+    })
     const userSaved = await newUser.save()
 
     return userSaved

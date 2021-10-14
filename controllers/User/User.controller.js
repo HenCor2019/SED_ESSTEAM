@@ -8,11 +8,9 @@ const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 const userController = {
   register: async (req, res) => {
     const { validatedBody: body } = req
+    console.log({ body })
 
     const { content: user } = await userServices.findOneByEmail(body)
-
-    if (user?.active === false)
-      return userResponse.successfullyRegister(res, user)
 
     if (user) throw new ErrorResponse('RepeatError', 'Email already taken')
 

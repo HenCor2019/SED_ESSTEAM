@@ -7,13 +7,14 @@ const {
   insertNewGame,
   updateGame,
   deleteGame,
-  allGames
+  allGames,
+  recommendedGames
 } = require('../../controllers/Games/Game.controller')
 
-router.use('/', middleware.authUser)
 router.get('/', allGames)
+router.get('/recommended/:id', gameValidator.validateId, recommendedGames)
 
-router.use('/', middleware.isAdmin)
+router.use('/', middleware.authUser, middleware.isAdmin)
 router.post(
   '/',
   upload.single('image'),

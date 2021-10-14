@@ -9,6 +9,14 @@ const gameRepository = {
 
   findOneById: (id) => Game.findById(id),
 
+  findByGenders: ({ pattern, title }) => {
+    return Game.find({
+      $and: [
+        { genders: { $in: [new RegExp(pattern, 'i')] } },
+        { title: { $not: { $regex: title } } }
+      ]
+    })
+  },
   deleteGameById: (id) => Game.findByIdAndDelete(id),
 
   getAllGames: () => Game.find(),
