@@ -36,8 +36,9 @@ const validatorSchemas = {
         role: Joi.string(),
         favoriteGames: Joi.array().items(Joi.string()),
         games: Joi.array().items(Joi.string()),
-        dob: Joi.string(),
-        about: Joi.string()
+        dob: Joi.optional(),
+        about: Joi.optional(),
+        responses: Joi.string()
       }).required(),
       game: Joi.object({
         id: Joi.string().required(),

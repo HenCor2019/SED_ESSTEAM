@@ -1,10 +1,10 @@
 Ver como cubris lo de contraseñas => para no ver eso => hashesh
 Ver como esta oculto todo metodo de encriptacion =>
 
-// cosas que intenta la pana elisa
+// cosas que intenta Elisa
 Investigar como meter las nosql
 
 Ver si los npm/weas asi estan deprecadas
-investigar sengrid para ver soporte (siga actualizado)
+investigar sengrid para ver soporte (siga actualizado) // no se puede usar
 
 

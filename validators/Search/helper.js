@@ -31,15 +31,15 @@ const searchSchemas = {
       .default(['pc', 'playstation', 'xbox', 'switch']),
     gd: Joi.alternatives()
       .try(
-        Joi.string().valid('fear', 'single-player').lowercase(),
+        Joi.string().valid('action', 'survival').lowercase(),
         Joi.array()
-          .items(Joi.string().valid('fear', 'single-player').lowercase())
+          .items(Joi.string().valid('action', 'survival').lowercase())
           .min(1)
           .unique()
       )
       .label('genders')
       .custom(mapToArray)
-      .default(['fear', 'single-player']),
+      .default(['action', 'survival']),
     limit: Joi.string()
       .regex(/^[0-9]+$/)
       .custom(transformToNumber)

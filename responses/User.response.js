@@ -18,14 +18,23 @@ const userResponse = {
     const payload = { id, fullname, username, email, role }
     const token = tokens.createLoginToken(payload)
 
-    return res.status(200).json({ success: true, token }).end()
+    return res
+      .status(200)
+      .json({
+        success: true,
+        token,
+        fullname,
+        username,
+        isAuthorized: role === process.env.ADMIN_ROLE
+      })
+      .end()
   },
 
   successfullyRequest: (res, token) =>
     res
       .header(RESET_PASSWORD_HEADER, token)
       .status(200)
-      .json({ success: true, message: 'Request was send successfully' })
+      .json({ success: true, message: 'Request was send successfully', token })
       .end(),
 
   successfullyUpdate: (res, isFavorite) =>

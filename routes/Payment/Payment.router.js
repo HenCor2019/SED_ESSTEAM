@@ -26,7 +26,7 @@ router.post(
   executePayment
 )
 
-router.get(
+router.post(
   '/execute',
   middleware.authPayment,
   paymentValidator.validatePaymentContent,

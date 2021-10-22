@@ -22,6 +22,13 @@ const gameResponse = {
       count: games.length,
       categories: mapCategories(games)
     })
+  },
+
+  successfullyGame: (res, game) => {
+    return res.status(200).json({
+      success: true,
+      game
+    })
   }
 }
 

@@ -75,6 +75,7 @@ const userServices = {
       )
 
     const token = tokens.createResetPasswordToken(user)
+    console.log({ body: body.responses, user: user.responses.questions })
     const sameResponses = await hashingService.compareResponses(
       body.responses,
       user.responses.questions
@@ -98,9 +99,11 @@ const userServices = {
       hashedPassword
     )
 
-    if (!passwordAreEquals) {
-      throw new ErrorResponse('LoginError', 'User and password not match')
-    }
+    if (!passwordAreEquals)
+      throw new ErrorResponse(
+        'LoginError',
+        'The credentials you entered are invalid'
+      )
 
     return new ServiceResponse(true)
   },

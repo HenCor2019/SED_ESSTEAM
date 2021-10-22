@@ -24,7 +24,7 @@ const paymentController = {
       throw new ErrorResponse('PaymentError', 'Cannot complete the payment')
     }
 
-    if (user.games.includes(idGame)) {
+    if (user['games'].includes(idGame)) {
       throw new ErrorResponse('PaymentError', 'Game already purchased')
     }
 
@@ -52,7 +52,8 @@ const paymentController = {
 
     const { content: loggedUser } = await userServices.identifyUser(userSession)
 
-    if (!loggedUser) throw new ErrorResponse('LoginError', 'Fields not match')
+    if (!loggedUser)
+      throw new ErrorResponse('PaymentError', 'Unable to process your payment')
 
     const { user, game } = validatedPaymentContent.application_context
     const { content: paymentUser } = await userServices.findOneById(user.id)

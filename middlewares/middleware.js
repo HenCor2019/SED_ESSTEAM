@@ -1,16 +1,21 @@
 const { tokens } = require('../config/tokens')
+const { RateLimiterMongo } = require('rate-limiter-flexible')
+const mongoose = require('mongoose')
+
 const ErrorResponse = require('../classes/ErrorResponse')
 const {
   HANDLER_ERRORS,
   includeAdminRole,
   includeRole,
   startWithBearerSign,
-  getPaymentInfo
+  getPaymentInfo,
+  ATTEMPTS
 } = require('./helper')
 
 const middleware = {
   resetPassword: async (req, res, next) => {
     const { RESET_PASSWORD_HEADER, TOKEN_RESET_PASSWORD_KEY } = process.env
+
     const token = req.header(RESET_PASSWORD_HEADER)
 
     if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
@@ -83,6 +88,29 @@ const middleware = {
     console.log(error.name)
     const handler = HANDLER_ERRORS[error.name] || HANDLER_ERRORS.defaultError
     handler(res, error)
+  },
+
+  rateLimiterMiddleware: (req, res, next) => {
+    const path = req.route.path.substring(1) || ''
+    console.log({ path })
+
+    const pathConfig = ATTEMPTS[path] ?? ATTEMPTS.default
+    console.log({ pathConfig })
+
+    const config = { storeClient: mongoose.connection, ...pathConfig }
+    const rateLimiter = new RateLimiterMongo(config)
+
+    rateLimiter
+      .consume(req.ip)
+      .then(() => {
+        next()
+      })
+      .catch((error) => {
+        res.status(429).json({
+          success: false,
+          message: `You've tried to many times. try again later`
+        })
+      })
   },
 
   unknownEndpoint: (req, res) => {

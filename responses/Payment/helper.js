@@ -43,7 +43,7 @@ const createNewReport = ({ game, date, discountPrice: earnings }) => {
     title,
     creator,
     sells: 1,
-    lastPurchase: date,
+    lastPurchase: date.toString().substring(0, 15),
     earnings
   }
   return newReport

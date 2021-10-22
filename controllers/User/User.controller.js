@@ -8,15 +8,17 @@ const { uniqueFields, insertOrRemoveGame } = require('../../utils/helper')
 const userController = {
   register: async (req, res) => {
     const { validatedBody: body } = req
-    console.log({ body })
 
-    const { content: user } = await userServices.findOneByEmail(body)
+    const { content: email } = await userServices.findOneByEmail(body)
+    if (email) throw new ErrorResponse('RepeatError', 'Email already taken')
 
-    if (user) throw new ErrorResponse('RepeatError', 'Email already taken')
+    const { content: username } = await userServices.findOneByUsername(body)
+    if (username)
+      throw new ErrorResponse('RepeatError', 'Username already taken')
 
     const { content: newUser } = await userServices.register(body)
 
-    return userResponse.successfullyRegister(res, newUser)
+    return userResponse.successfullyLogin(res, newUser)
   },
 
   registerHandler: async (req, res, next) => {
@@ -46,8 +48,11 @@ const userController = {
     const { validatedLogin: body } = req
     const { content: user } = await userServices.findOneByUsername(body)
 
-    if (!(user && user.active)) {
-      throw new ErrorResponse('LoginError', 'User and password not match')
+    if (!user) {
+      throw new ErrorResponse(
+        'LoginError',
+        'The credentials you entered are invalid'
+      )
     }
 
     await userServices.comparePasswords(body.password, user.hashedPassword)
@@ -69,7 +74,7 @@ const userController = {
 
     if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
 
-    user.newPassword = body.newPassword
+    user['newPassword'] = body.newPassword
     await userServices.updateById(user)
 
     return userResponse.successfullyUpdate(res)

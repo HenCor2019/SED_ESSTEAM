@@ -50,6 +50,14 @@ const HANDLER_ERRORS = {
   }
 }
 
+const ATTEMPTS = {
+  login: { points: 5, duration: 100 },
+  signin: { points: 10, duration: 75 },
+  'reset-password': { points: 4, duration: 120 },
+  'request-password': { points: 4, duration: 120 },
+  default: { points: 5, durations: 100 }
+}
+
 function includeRole({ role }) {
   const { ADMIN_ROLE, USER_ROLE } = process.env
   const roles = [ADMIN_ROLE, USER_ROLE]
@@ -80,5 +88,6 @@ module.exports = {
   includeAdminRole,
   includeRole,
   startWithBearerSign,
-  getPaymentInfo
+  getPaymentInfo,
+  ATTEMPTS
 }

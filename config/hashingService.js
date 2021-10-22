@@ -19,11 +19,10 @@ const hashingService = {
   compareHash: (plainPassword, hashedPassword) =>
     bcrypt.compare(plainPassword, hashedPassword),
 
-  compareResponses: (responses, originalResponses) => {
-    return (
-      bcrypt.compare(responses[0], originalResponses[0]) &&
-      bcrypt.compare(responses[1], originalResponses[1])
-    )
+  compareResponses: async (responses, originalResponses) => {
+    const first = await bcrypt.compare(responses[0], originalResponses[0])
+    const second = await bcrypt.compare(responses[1], originalResponses[1])
+    return first && second
   }
 }
 

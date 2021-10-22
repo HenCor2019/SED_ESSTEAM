@@ -6,7 +6,7 @@ const paymentResponse = {
       success: false,
       links: {
         rel: 'unapproved',
-        href: 'localhost:3000/checkoutfailed'
+        href: '/checkoutfailed'
       }
     }),
 
@@ -15,7 +15,7 @@ const paymentResponse = {
       success: true,
       links: {
         rel: 'approved',
-        href: `localhost:3000/checkoutsuccess?token=${token}`
+        href: `/checkoutsuccess?token=${token}`
       }
     }),
 

@@ -9,4 +9,18 @@ const mapToArray = (value) => (typeof value === 'string' ? [value] : value)
 
 const mapToPercentage = (value) => value / 100
 
-module.exports = { transformToNumber, setUrlImage, mapToArray, mapToPercentage }
+const samePassword = (value, helper) => {
+  const [body] = helper.state.ancestors
+  if (body['newPassword'] !== value)
+    return helper.message('Passwords are not equals')
+
+  return value
+}
+
+module.exports = {
+  transformToNumber,
+  setUrlImage,
+  mapToArray,
+  mapToPercentage,
+  samePassword
+}

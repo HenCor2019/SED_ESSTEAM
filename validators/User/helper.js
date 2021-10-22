@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { samePassword } = require('../helper')
 
 const validatorSchemas = {
   preRegisterSchema: Joi.object({
@@ -38,7 +39,8 @@ const validatorSchemas = {
   }).required(),
 
   resetPasswordSchema: Joi.object({
-    newPassword: Joi.string().required()
+    newPassword: Joi.string().required(),
+    confirmedPassword: Joi.string().custom(samePassword).required()
   }).required(),
 
   updateSchema: Joi.object({

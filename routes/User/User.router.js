@@ -15,18 +15,30 @@ const userValidator = require('../../validators/User/User.validator')
 
 const router = require('express').Router()
 
-router.post('/signin', userValidator.validatePreRegister, register)
+router.post(
+  '/signin',
+  middleware.rateLimiterMiddleware,
+  userValidator.validatePreRegister,
+  register
+)
 
-router.post('/login', userValidator.validateLogin, login)
+router.post(
+  '/login',
+  middleware.rateLimiterMiddleware,
+  userValidator.validateLogin,
+  login
+)
 
 router.post(
   '/request-password',
+  middleware.rateLimiterMiddleware,
   userValidator.validateRequestPassword,
   requestPassword
 )
 
 router.put(
   '/reset-password',
+  middleware.rateLimiterMiddleware,
   middleware.resetPassword,
   userValidator.validateResetPassword,
   requestPasswordHandler

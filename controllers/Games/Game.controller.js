@@ -44,6 +44,15 @@ const gameController = {
     return gameResponse.successfullyDelete(res)
   },
 
+  oneGame: async (req, res) => {
+    const { validatedId: id } = req
+
+    const { content: game } = await gamesServices.findOneById(id)
+    if (!game) return new ErrorResponse('UnExistError', 'Cannot find the game')
+
+    return gameResponse.successfullyGame(res, game)
+  },
+
   allGames: async (req, res) => {
     const { content: games } = await gamesServices.getAllGames()
 

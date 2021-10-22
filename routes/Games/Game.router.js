@@ -8,10 +8,12 @@ const {
   updateGame,
   deleteGame,
   allGames,
-  recommendedGames
+  recommendedGames,
+  oneGame
 } = require('../../controllers/Games/Game.controller')
 
 router.get('/', allGames)
+router.get('/:id', gameValidator.validateId, oneGame)
 router.get('/recommended/:id', gameValidator.validateId, recommendedGames)
 
 router.use('/', middleware.authUser, middleware.isAdmin)
