@@ -19,7 +19,9 @@ const storage = multer.diskStorage({
 })
 
 const fileFilter = function (req, file, cb) {
-  if (!isAnImage(file.originalname)) { return cb(new ErrorResponse('InvalidImage', 'Upload an image')) }
+  if (!isAnImage(file.originalname)) {
+    return cb(new ErrorResponse('ImageError', 'Upload an image'))
+  }
 
   return cb(undefined, true)
 }

@@ -6,13 +6,13 @@ const searchSchemas = {
     q: Joi.string().label('title').required(),
     mn: Joi.string()
       .regex(/^[0-9]+$/)
+      .message('min price must be a number')
       .custom(transformToNumber)
-      .message('minprice must be a number')
       .default(0),
     mx: Joi.string()
       .regex(/^[0-9]+$/)
+      .message('max price must be a number')
       .custom(transformToNumber)
-      .message(' maxprice must be a number')
       .default(100),
     pt: Joi.alternatives()
       .try(

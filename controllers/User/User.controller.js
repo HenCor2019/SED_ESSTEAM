@@ -13,6 +13,7 @@ const userController = {
     if (email) throw new ErrorResponse('RepeatError', 'Email already taken')
 
     const { content: username } = await userServices.findOneByUsername(body)
+
     if (username)
       throw new ErrorResponse('RepeatError', 'Username already taken')
 
@@ -25,18 +26,21 @@ const userController = {
     const { validatedRegister: newUser, verifiedToken } = req
     const { id, active } = verifiedToken
 
-    if (active)
+    if (active) {
       throw new ErrorResponse('AlreadyRegisterError', 'Already registered')
+    }
 
     const { content: currentUser } = await userServices.findOneById(id)
 
-    if (!currentUser)
+    if (!currentUser) {
       throw new ErrorResponse('UnExistError', 'Cannot find the user')
+    }
 
     const { content: someUser } = await userServices.findOneByUsername(newUser)
 
-    if (someUser)
+    if (someUser) {
       throw new ErrorResponse('RepeatError', 'Some fields are already taken')
+    }
 
     newUser.active = true
     await userServices.updateById(validateNullFields(newUser, currentUser))
@@ -72,11 +76,14 @@ const userController = {
     const { id } = req.user
     const { content: user } = await userServices.findOneById(id)
 
-    if (!user) throw new ErrorResponse('UnExistError', 'Cannot find the user')
+    if (!user) {
+      throw new ErrorResponse('UnExistError', 'Cannot find the user')
+    }
 
     user['newPassword'] = body.newPassword
     await userServices.updateById(user)
 
+    console.log('Password was updated')
     return userResponse.successfullyUpdate(res)
   },
 

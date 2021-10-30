@@ -7,11 +7,13 @@ const paymentRepository = {
     return newPayment.save().then((savedPayment) => savedPayment)
   },
 
-  getPayments: ({ l: limit, s: skip }) =>
+  getPayments: ({ limit, offset }) =>
     Payment.find()
-      .skip(skip * limit)
+      .skip(offset * limit)
       .limit(limit)
-      .populate('game')
+      .populate('game'),
+
+  getAllPayments: () => Payment.find()
 }
 
 module.exports = paymentRepository

@@ -20,13 +20,8 @@ const paymentController = {
     if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
 
     const { content: user } = await userServices.findOneById(req.user.id)
-    if (!user) {
+    if (!user)
       throw new ErrorResponse('PaymentError', 'Cannot complete the payment')
-    }
-
-    if (user['games'].includes(idGame)) {
-      throw new ErrorResponse('PaymentError', 'Game already purchased')
-    }
 
     const payment = generatePayment(game, user)
 
@@ -75,6 +70,8 @@ const paymentController = {
   reports: async (req, res) => {
     const { filters } = req
     const { content: payments } = await paymentServices.getReports(filters)
+    const { content: allPayments } = await paymentServices.getAllPayments()
+    payments['count'] = allPayments
 
     return paymentResponse.successfullyReports(res, payments)
   }

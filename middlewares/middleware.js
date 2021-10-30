@@ -1,6 +1,7 @@
 const { tokens } = require('../config/tokens')
 const { RateLimiterMongo } = require('rate-limiter-flexible')
 const mongoose = require('mongoose')
+const sanitizeHTML = require('sanitize-html')
 
 const ErrorResponse = require('../classes/ErrorResponse')
 const {
@@ -92,10 +93,8 @@ const middleware = {
 
   rateLimiterMiddleware: (req, res, next) => {
     const path = req.route.path.substring(1) || ''
-    console.log({ path })
 
     const pathConfig = ATTEMPTS[path] ?? ATTEMPTS.default
-    console.log({ pathConfig })
 
     const config = { storeClient: mongoose.connection, ...pathConfig }
     const rateLimiter = new RateLimiterMongo(config)

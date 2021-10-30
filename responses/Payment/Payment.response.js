@@ -1,4 +1,4 @@
-const { createReports } = require('./helper')
+const { createReports, transformDates } = require('./helper')
 
 const paymentResponse = {
   unapprovedPayment: (res) =>
@@ -25,9 +25,10 @@ const paymentResponse = {
       .json({ success: true, message: 'Thanks for your purchase' }),
 
   successfullyReports: (res, payments) => {
-    const reports = payments.reduce(createReports, [])
+    const { count } = payments
+    const reports = payments.reduce(createReports, []).map(transformDates)
 
-    return res.status(200).json({ success: true, reports })
+    return res.status(200).json({ success: true, count, reports })
   }
 }
 

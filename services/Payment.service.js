@@ -23,6 +23,14 @@ const paymentServices = {
     })
 
     return new ServiceResponse(true, mappedPayments)
+  },
+
+  getAllPayments: async () => {
+    const payments = await paymentRepository.getAllPayments()
+    const count = payments
+      .map((payment) => payment.game.toString())
+      .filter((id, index, elements) => index === elements.indexOf(id))
+    return new ServiceResponse(true, Math.ceil(count.length / 5))
   }
 }
 

@@ -1,16 +1,18 @@
 const Joi = require('joi')
-const { samePassword } = require('../helper')
+const { samePassword, sanitizeHTML, generateFullname } = require('../helper')
 
 const validatorSchemas = {
   preRegisterSchema: Joi.object({
-    fullname: Joi.string().min(4).max(40).required(),
-    username: Joi.string().min(4).max(20).required(),
+    firstname: Joi.string().custom(sanitizeHTML).min(4).max(30).required(),
+    lastname: Joi.string().custom(sanitizeHTML).min(4).max(30).required(),
+    fullname: Joi.string().default(generateFullname),
+    username: Joi.string().custom(sanitizeHTML).min(4).max(20).required(),
     questions: Joi.array()
       .items(Joi.string().required().lowercase())
       .min(2)
       .max(2)
       .required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().custom(sanitizeHTML).email().required(),
     password: Joi.string().min(5).max(16).required()
   }).required(),
 
@@ -44,9 +46,8 @@ const validatorSchemas = {
   }).required(),
 
   updateSchema: Joi.object({
-    fullname: Joi.string(),
-    username: Joi.string(),
-    email: Joi.string().email()
+    fullname: Joi.string().custom(sanitizeHTML),
+    username: Joi.string().custom(sanitizeHTML)
   })
     .min(1)
     .required(),

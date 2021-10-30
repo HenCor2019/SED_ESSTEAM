@@ -20,7 +20,6 @@ const gameController = {
   updateGame: async (req, res) => {
     const { validatedId: id, validatedUpdate: validatedGame } = req
 
-    console.log({ id, validatedGame })
     const { content: game } = await gamesServices.findOneById(id)
     if (!game) throw new ErrorResponse('UnExistError', 'Cannot find the game')
 

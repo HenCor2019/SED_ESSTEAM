@@ -61,16 +61,16 @@ const validatorSchemas = {
   }).required(),
 
   querySchema: Joi.object({
-    l: Joi.string()
+    limit: Joi.string()
       .regex(/^[0-9]+$/)
       .message('limit must be a number')
-      .default(5)
-      .custom(transformToNumber),
-    s: Joi.string()
-      .regex(/^[0-9]+$/)
-      .message('s must be a number')
-      .default(0)
       .custom(transformToNumber)
+      .default(5),
+    offset: Joi.string()
+      .regex(/^[0-9]+$/)
+      .message('offset must be a number')
+      .custom(transformToNumber)
+      .default(0)
   }),
 
   accountSchema: Joi.object({

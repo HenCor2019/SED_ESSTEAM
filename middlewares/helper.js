@@ -14,7 +14,7 @@ const HANDLER_ERRORS = {
   UnExistError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),
 
-  InvalidImage: (res, { message }) =>
+  ImageError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),
 
   SyntaxError: (res, { message }) =>
@@ -31,6 +31,9 @@ const HANDLER_ERRORS = {
 
   PaymentError: (res, { message }) =>
     res.status(401).json({ success: false, message }).end(),
+
+  AlreadyPayment: (res, { message }) =>
+    res.status(303).json({ success: false, message, purchased: true }).end(),
 
   TokenExpiredError: (res, { message }) =>
     res.status(401).json({ success: false, message: 'Invalid token' }).end(),
@@ -51,7 +54,7 @@ const HANDLER_ERRORS = {
 }
 
 const ATTEMPTS = {
-  login: { points: 5, duration: 100 },
+  login: { points: 5, duration: 100 }, // add more attempts login
   signin: { points: 10, duration: 75 },
   'reset-password': { points: 4, duration: 120 },
   'request-password': { points: 4, duration: 120 },

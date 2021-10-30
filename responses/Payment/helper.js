@@ -23,6 +23,7 @@ const updatePaymentReport = (reports, payment) => {
 
   const { sells, lastPurchase: newDate, earnings, ...remains } = reports[index]
   const lowerDate = date.getTime() < newDate.getTime() ? newDate : date
+  const newEarnings = earnings + game.basePrice * (1 - game.discount)
 
   return {
     position: index,
@@ -30,7 +31,7 @@ const updatePaymentReport = (reports, payment) => {
       ...remains,
       sells: sells + 1,
       lastPurchase: lowerDate,
-      earnings: earnings + game.basePrice * (1 - game.discount)
+      earnings: newEarnings.toFixed(2) * 1
     }
   }
 }
@@ -43,10 +44,15 @@ const createNewReport = ({ game, date, discountPrice: earnings }) => {
     title,
     creator,
     sells: 1,
-    lastPurchase: date.toString().substring(0, 15),
-    earnings
+    lastPurchase: date,
+    earnings: earnings.toFixed(2) * 1
   }
   return newReport
 }
 
-module.exports = { createReports }
+const transformDates = ({ lastPurchase, ...rest }) => ({
+  lastPurchase: lastPurchase.toString().substring(0, 15),
+  ...rest
+})
+
+module.exports = { createReports, transformDates }
