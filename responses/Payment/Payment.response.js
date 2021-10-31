@@ -26,9 +26,9 @@ const paymentResponse = {
 
   successfullyReports: (res, payments) => {
     const { count } = payments
-    const reports = payments.reduce(createReports, []).map(transformDates)
+    // const reports = payments.reduce(createReports, []).map(transformDates)
 
-    return res.status(200).json({ success: true, count, reports })
+    return res.status(200).json({ success: true, count, reports: payments })
   }
 }
 

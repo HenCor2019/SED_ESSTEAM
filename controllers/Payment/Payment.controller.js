@@ -9,7 +9,8 @@ const {
   auth,
   generateNewPayment,
   generatePayment,
-  usersAreNotEquals
+  usersAreNotEquals,
+  updatePayment
 } = require('./helper')
 
 const paymentController = {
@@ -59,20 +60,24 @@ const paymentController = {
     if (paymentUser.games.includes(game.id))
       throw new ErrorResponse('PaymentError', 'Game already purchased')
 
+    const { content: payment } = await paymentServices.findOneByGame(game.id)
+
     const newPayment = generateNewPayment(validatedPaymentContent)
-    await paymentServices.savePayment(newPayment)
+    const updatedPayment = payment ? updatePayment(newPayment, payment) : null
+
+    updatedPayment
+      ? await paymentServices.updatePayment(updatedPayment)
+      : await paymentServices.savePayment(newPayment)
 
     await userServices.updateGames(user, game.id)
-
     return paymentResponse.successfullySaved(res)
   },
 
   reports: async (req, res) => {
     const { filters } = req
     const { content: payments } = await paymentServices.getReports(filters)
-    const { content: allPayments } = await paymentServices.getAllPayments()
-    payments['count'] = allPayments
-
+    const { content: count } = await paymentServices.countPayments()
+    payments['count'] = Math.ceil(count / filters.limit)
     return paymentResponse.successfullyReports(res, payments)
   }
 }

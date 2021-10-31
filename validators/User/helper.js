@@ -1,19 +1,40 @@
 const Joi = require('joi')
-const { samePassword, sanitizeHTML, generateFullname } = require('../helper')
+const {
+  samePassword,
+  sanitizeHTML,
+  generateFullname,
+  regex,
+  changeValue
+} = require('../helper')
 
 const validatorSchemas = {
   preRegisterSchema: Joi.object({
-    firstname: Joi.string().custom(sanitizeHTML).min(4).max(30).required(),
-    lastname: Joi.string().custom(sanitizeHTML).min(4).max(30).required(),
-    fullname: Joi.string().default(generateFullname),
-    username: Joi.string().custom(sanitizeHTML).min(4).max(20).required(),
+    firstname: Joi.string()
+      .custom(regex.spaces)
+      .custom(sanitizeHTML)
+      .min(4)
+      .max(30)
+      .required(),
+    lastname: Joi.string()
+      .custom(regex.spaces)
+      .custom(sanitizeHTML)
+      .min(4)
+      .max(30)
+      .required(),
+    fullname: Joi.string().custom(changeValue).default(generateFullname),
+    username: Joi.string()
+      .custom(regex.spaces)
+      .custom(sanitizeHTML)
+      .min(4)
+      .max(20)
+      .required(),
     questions: Joi.array()
       .items(Joi.string().required().lowercase())
       .min(2)
       .max(2)
       .required(),
     email: Joi.string().custom(sanitizeHTML).email().required(),
-    password: Joi.string().min(5).max(16).required()
+    password: Joi.string().min(8).custom(regex.password).required()
   }).required(),
 
   registerSchema: Joi.object({
@@ -41,7 +62,7 @@ const validatorSchemas = {
   }).required(),
 
   resetPasswordSchema: Joi.object({
-    newPassword: Joi.string().required(),
+    newPassword: Joi.string().min(8).custom(regex.password).required(),
     confirmedPassword: Joi.string().custom(samePassword).required()
   }).required(),
 

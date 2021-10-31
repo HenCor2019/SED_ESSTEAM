@@ -83,7 +83,6 @@ const userController = {
     user['newPassword'] = body.newPassword
     await userServices.updateById(user)
 
-    console.log('Password was updated')
     return userResponse.successfullyUpdate(res)
   },
 

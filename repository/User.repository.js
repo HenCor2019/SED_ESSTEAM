@@ -28,6 +28,9 @@ const userRepository = {
 
   find: async () => await User.find({}),
 
+  findByUsernameOrEmail: async ({ field }) =>
+    await User.find({ $or: [{ username: field }, { email: field }] }),
+
   create: async ({ fullname, username, email, hashedPassword, responses }) => {
     const newUser = new User({
       fullname,

@@ -6,8 +6,26 @@ const auth = {
 const generateNewPayment = ({ amount, application_context }) => {
   return {
     netAmount: amount,
-    user: application_context.user.id,
+    users: [application_context.user.id],
     game: application_context.game.id
+  }
+}
+
+const updatePayment = (newPayment, payment) => {
+  const { netAmount: newAmount } = newPayment
+  const { netAmount: currentAmount } = payment
+
+  const { users: newUser } = newPayment
+
+  return {
+    id: payment._id,
+    netAmount: {
+      currencyCode: currentAmount.currencyCode,
+      value: newAmount.value + currentAmount.value
+    },
+    users: [...payment.users, ...newUser],
+    sells: payment.sells + 1,
+    date: new Date()
   }
 }
 
@@ -37,5 +55,6 @@ module.exports = {
   auth,
   generateNewPayment,
   generatePayment,
-  usersAreNotEquals
+  usersAreNotEquals,
+  updatePayment
 }

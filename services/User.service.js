@@ -29,6 +29,13 @@ const userServices = {
     return new ServiceResponse(true, user)
   },
 
+  findByUsernameOrEmail: async (body) => {
+    const users = await userRepository.findByUsernameOrEmail(body)
+    if (!users) return new ServiceResponse(false, users)
+
+    return new ServiceResponse(true, users)
+  },
+
   findOneById: async (id) => {
     const user = await userRepository.findOneById(id)
 
@@ -75,7 +82,6 @@ const userServices = {
       )
 
     const token = tokens.createResetPasswordToken(user)
-    console.log({ body: body.responses, user: user.responses.questions })
     const sameResponses = await hashingService.compareResponses(
       body.responses,
       user.responses.questions

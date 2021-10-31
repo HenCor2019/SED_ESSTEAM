@@ -42,6 +42,37 @@ const generateFullname = (parent, helpers) => {
   return `${firstname} ${lastname}`
 }
 
+const regex = {
+  spaces: (value, helper) => {
+    const [name] = helper.state.path
+    const pattern = /[\n# $&:\n\t]/g
+
+    if (value.match(pattern))
+      return helper.message(`${name} cannot contain spaces`)
+
+    return value
+  },
+
+  password: (value, helper) => {
+    const [name] = helper.state.path
+    const pattern =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+
+    if (!value.match(pattern))
+      return helper.message(
+        `${name} must contain at least 1 letter and 1 special character`
+      )
+
+    return value
+  }
+}
+
+const changeValue = (value, helpers) => {
+  const [body] = helpers.state.ancestors
+
+  return `${body.firstname} ${body.lastname}`
+}
+
 module.exports = {
   transformToNumber,
   setUrlImage,
@@ -49,5 +80,7 @@ module.exports = {
   mapToPercentage,
   samePassword,
   sanitizeHTML,
-  generateFullname
+  generateFullname,
+  regex,
+  changeValue
 }
