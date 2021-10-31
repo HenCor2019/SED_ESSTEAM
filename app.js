@@ -24,7 +24,6 @@ database.connect()
 app.set('port', port)
 app.use(cors({ origin: whiteList }))
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')))
 
 const server = http.createServer(app)
 server.listen(port)
@@ -37,12 +36,18 @@ server.on('listening', () => {
   console.log(`Listening on port ${port}`)
 })
 
+app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/game', gameRouter)
 app.use('/api/v1/search', searchRouter)
 app.use('/api/v1/payment', paymentRouter)
 
-app.use(middleware.errorHandling)
+app.get('/*', (req, res, next) => {
+  if (req?.originalUrl?.startsWith('/api/v1')) return next()
+  res.sendFile(path.join(__dirname, 'public/index.html'))
+})
+
 app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandling)
 
 module.exports = { app, server }
