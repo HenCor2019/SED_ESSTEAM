@@ -10,12 +10,14 @@ const {
 const validatorSchemas = {
   preRegisterSchema: Joi.object({
     firstname: Joi.string()
+      .trim()
       .custom(regex.spaces)
       .custom(sanitizeHTML)
       .min(4)
       .max(30)
       .required(),
     lastname: Joi.string()
+      .trim()
       .custom(regex.spaces)
       .custom(sanitizeHTML)
       .min(4)
@@ -23,17 +25,18 @@ const validatorSchemas = {
       .required(),
     fullname: Joi.string().custom(changeValue).default(generateFullname),
     username: Joi.string()
+      .trim()
+      .min(4)
       .custom(regex.spaces)
       .custom(sanitizeHTML)
-      .min(4)
       .max(20)
       .required(),
     questions: Joi.array()
-      .items(Joi.string().required().lowercase())
+      .items(Joi.string().trim().required().lowercase())
       .min(2)
       .max(2)
       .required(),
-    email: Joi.string().custom(sanitizeHTML).email().required(),
+    email: Joi.string().trim().custom(sanitizeHTML).email().required(),
     password: Joi.string().min(8).custom(regex.password).required()
   }).required(),
 

@@ -15,7 +15,7 @@ const gameRepository = {
         { genders: { $in: [new RegExp(pattern, 'i')] } },
         { title: { $not: { $regex: title } } }
       ]
-    })
+    }).limit(5)
   },
   deleteGameById: (id) => Game.findByIdAndDelete(id),
 

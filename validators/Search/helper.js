@@ -3,8 +3,9 @@ const { mapToArray, transformToNumber } = require('../helper')
 
 const searchSchemas = {
   filtersSchema: Joi.object({
-    q: Joi.string().label('title').required(),
+    q: Joi.string().trim().label('title').required(),
     mn: Joi.string()
+      .trim()
       .regex(/^[0-9]+$/)
       .message('min price must be a number')
       .custom(transformToNumber)
@@ -16,7 +17,10 @@ const searchSchemas = {
       .default(100),
     pt: Joi.alternatives()
       .try(
-        Joi.string().valid('pc', 'playstation', 'xbox', 'switch').lowercase(),
+        Joi.string()
+          .trim()
+          .valid('pc', 'playstation', 'xbox', 'switch')
+          .lowercase(),
         Joi.array()
           .items(
             Joi.string()
@@ -31,7 +35,7 @@ const searchSchemas = {
       .default(['pc', 'playstation', 'xbox', 'switch']),
     gd: Joi.alternatives()
       .try(
-        Joi.string().valid('action', 'survival').lowercase(),
+        Joi.string().trim().valid('action', 'survival').lowercase(),
         Joi.array()
           .items(Joi.string().valid('action', 'survival').lowercase())
           .min(1)

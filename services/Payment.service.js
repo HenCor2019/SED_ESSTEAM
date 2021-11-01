@@ -35,7 +35,7 @@ const paymentServices = {
           lastPurchase: date.toString().substring(0, 15),
           id: id,
           sells: sells,
-          earnings: netAmount.value,
+          earnings: netAmount.value.toFixed(2),
           title: game.title
         }
       }

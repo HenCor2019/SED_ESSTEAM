@@ -9,8 +9,8 @@ const {
 
 const validatorSchemas = {
   newGameSchema: Joi.object({
-    title: Joi.string().custom(sanitizeHTML).min(5).max(30).required(),
-    description: Joi.string().custom(sanitizeHTML).min(20).required(),
+    title: Joi.string().trim().custom(sanitizeHTML).min(5).max(30).required(),
+    description: Joi.string().trim().custom(sanitizeHTML).min(20).required(),
     discount: Joi.string()
       .regex(/^[0-9][0-9]?$|^100$/)
       .message('discount must be an integer and between 0 and 100')
@@ -23,10 +23,11 @@ const validatorSchemas = {
       .custom(transformToNumber)
       .required()
       .label('price'),
-    creator: Joi.string().custom(sanitizeHTML).required(),
+    creator: Joi.string().trim().custom(sanitizeHTML).required(),
     platforms: Joi.alternatives()
       .try(
         Joi.string()
+          .trim()
           .custom(sanitizeHTML)
           .valid('pc', 'playstation', 'xbox', 'switch')
           .lowercase(),
@@ -45,6 +46,7 @@ const validatorSchemas = {
     genders: Joi.alternatives()
       .try(
         Joi.string()
+          .trim()
           .custom(sanitizeHTML)
           .valid('action', 'adventures', 'survival', 'terror')
           .lowercase(),
