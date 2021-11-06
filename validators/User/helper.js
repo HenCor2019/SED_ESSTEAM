@@ -4,7 +4,8 @@ const {
   sanitizeHTML,
   generateFullname,
   regex,
-  changeValue
+  changeValue,
+  isUsernamePassword
 } = require('../helper')
 
 const validatorSchemas = {
@@ -37,7 +38,11 @@ const validatorSchemas = {
       .max(2)
       .required(),
     email: Joi.string().trim().custom(sanitizeHTML).email().required(),
-    password: Joi.string().min(8).custom(regex.password).required()
+    password: Joi.string()
+      .min(8)
+      .custom(isUsernamePassword)
+      .custom(regex.password)
+      .required()
   }).required(),
 
   registerSchema: Joi.object({

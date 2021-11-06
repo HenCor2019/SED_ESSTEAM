@@ -80,6 +80,13 @@ const userController = {
       throw new ErrorResponse('UnExistError', 'Cannot find the user')
     }
 
+    if (user['username'] === body.newPassword) {
+      throw new ErrorResponse(
+        'ValidationError',
+        'Username cannot be your password'
+      )
+    }
+
     user['newPassword'] = body.newPassword
     await userServices.updateById(user)
 

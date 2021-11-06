@@ -67,6 +67,15 @@ const regex = {
   }
 }
 
+const isUsernamePassword = (value, helpers) => {
+  const [body] = helpers.state.ancestors
+
+  if (body.username.trim() === body.password.trim())
+    return helpers.message('Username cannot be your password')
+
+  return value
+}
+
 const changeValue = (value, helpers) => {
   const [body] = helpers.state.ancestors
 
@@ -82,5 +91,6 @@ module.exports = {
   sanitizeHTML,
   generateFullname,
   regex,
-  changeValue
+  changeValue,
+  isUsernamePassword
 }
