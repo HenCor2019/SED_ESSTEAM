@@ -13,7 +13,7 @@ const transformToNumber = (value, helpers) => {
 
 const setUrlImage = (path) => {
   const { BASE_URL_CLIENT } = process.env
-  return `${BASE_URL_CLIENT}${path.substring(7)}`
+  return `${path.substring(7)}`
 }
 
 const mapToArray = (value) => (typeof value === 'string' ? [value] : value)
