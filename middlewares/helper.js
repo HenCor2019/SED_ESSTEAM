@@ -1,3 +1,11 @@
+const canRefreshToken = (expiredDate, current) => {
+  const milliseconds = current - expiredDate
+  const minutes = Math.floor(milliseconds / 1000 / 60)
+  console.log({ minutes })
+
+  return minutes < 1
+}
+
 const HANDLER_ERRORS = {
   CastError: (res, { message }) =>
     res.status(400).json({ success: false, message: message }).end(),
@@ -26,8 +34,9 @@ const HANDLER_ERRORS = {
   UnauthorizedError: (res, { message }) =>
     res.status(401).json({ success: false, message }).end(),
 
-  JsonWebTokenError: (res, { message }) =>
-    res.status(401).json({ success: false, message }).end(),
+  JsonWebTokenError: (res, { message }) => {
+    res.status(401).json({ success: false, message }).end()
+  },
 
   PaymentError: (res, { message }) =>
     res.status(401).json({ success: false, message }).end(),
@@ -35,8 +44,17 @@ const HANDLER_ERRORS = {
   AlreadyPayment: (res, { message }) =>
     res.status(303).json({ success: false, message, purchased: true }).end(),
 
-  TokenExpiredError: (res, { message }) =>
-    res.status(401).json({ success: false, message: 'Invalid token' }).end(),
+  TokenExpiredError: (res, error) => {
+    const canRefresh = canRefreshToken(Date.parse(error.expiredAt), Date.now())
+    res
+      .status(401)
+      .json({
+        success: false,
+        message: error.message,
+        canRefresh
+      })
+      .end()
+  },
 
   LoginError: (res, { message }) =>
     res.status(400).json({ success: false, message }).end(),

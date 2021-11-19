@@ -4,13 +4,16 @@ const {
   login,
   requestPassword,
   requestPasswordHandler,
-  updateFavoriteGames
+  updateFavoriteGames,
+  refreshToken
 } = require('../../controllers/User/User.controller')
 
 const { middleware } = require('../../middlewares/middleware')
 const userValidator = require('../../validators/User/User.validator')
 
 const router = require('express').Router()
+
+router.get('/refresh', middleware.authToken, refreshToken)
 
 router.post(
   '/signin',

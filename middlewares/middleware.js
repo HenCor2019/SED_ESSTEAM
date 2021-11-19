@@ -114,6 +114,26 @@ const middleware = {
 
   unknownEndpoint: (req, res) => {
     res.status(404).json({ success: false, message: 'Unknown endpoint' })
+  },
+
+  authToken: (req, res, next) => {
+    const { TOKEN_LOGIN_KEY } = process.env
+    const authorization = req.get('Authorization')
+
+    if (!(authorization && startWithBearerSign(authorization))) {
+      throw new ErrorResponse('UnauthorizedError', 'Access denied')
+    }
+
+    const [_, token] = authorization.split(' ')
+    if (!token) throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    const { success, content } = tokens.verifyToken(token, TOKEN_LOGIN_KEY)
+    if (!success) throw new ErrorResponse('UnauthorizedError', 'Access denied')
+
+    const userInformation = { id: content.id }
+
+    req.user = userInformation
+    next()
   }
 }
 

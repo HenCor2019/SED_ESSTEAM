@@ -8,9 +8,9 @@ const tokens = {
     return jwt.sign(payload, TOKEN_REGISTER_KEY, { expiresIn: '1d' })
   },
 
-  createLoginToken: (payload) => {
+  createLoginToken: (payload, time = '30') => {
     const { TOKEN_LOGIN_KEY } = process.env
-    return jwt.sign(payload, TOKEN_LOGIN_KEY, { expiresIn: '1d' })
+    return jwt.sign(payload, TOKEN_LOGIN_KEY, { expiresIn: time })
   },
 
   createResetPasswordToken: ({ id }) => {

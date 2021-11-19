@@ -139,6 +139,17 @@ const userController = {
   deleteAll: async (req, res) => {
     const { deletedCount = 0 } = await userServices.deleteAll()
     return userResponse.successfullyDelete(res, deletedCount)
+  },
+
+  refreshToken: async (req, res) => {
+    const { user: userAuth } = req
+    const { content: user } = await userServices.findOneById(userAuth.id)
+
+    if (!user) {
+      throw new ErrorResponse('UnExistError', 'Cannot find the user')
+    }
+
+    return userResponse.successfullyLogin(res, user)
   }
 }
 

@@ -16,15 +16,16 @@ const userResponse = {
 
   successfullyLogin: (res, { id, fullname, username, email, role }) => {
     const payload = { id, fullname, username, email, role }
-    const token = tokens.createLoginToken(payload)
+    const token = tokens.createLoginToken(payload, '60m')
+    const refreshToken = tokens.createLoginToken({ id }, '15m')
 
     return res
       .status(200)
       .json({
         success: true,
         token,
-        fullname,
-        username,
+        refreshToken,
+        username: username,
         isAuthorized: role === process.env.ADMIN_ROLE
       })
       .end()
