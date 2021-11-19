@@ -1,9 +1,8 @@
 const canRefreshToken = (expiredDate, current) => {
   const milliseconds = current - expiredDate
   const minutes = Math.floor(milliseconds / 1000 / 60)
-  console.log({ minutes })
 
-  return minutes < 1
+  return minutes < 20
 }
 
 const HANDLER_ERRORS = {
